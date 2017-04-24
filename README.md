@@ -1,2 +1,2 @@
 # DaedalusCompiler
-An open source Daedalus compiler based on LEX &amp; YACC
+An open source Daedalus compiler using Boost::Spirit
