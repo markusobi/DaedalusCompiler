@@ -196,7 +196,7 @@ namespace client {
 
         auto const unary_expr_def =
                 primary_expr
-                | (unary_op > primary_expr);
+                | (unary_op > unary_expr);
 
         auto const primary_expr_def =
                 uint_
