@@ -13,129 +13,113 @@
 #include <boost/optional.hpp>
 #include <list>
 
-namespace client { namespace ast
-{
-    ///////////////////////////////////////////////////////////////////////////
-    //  The AST
-    ///////////////////////////////////////////////////////////////////////////
-    namespace x3 = boost::spirit::x3;
+namespace client {
+    namespace ast {
+        ///////////////////////////////////////////////////////////////////////////
+        //  The AST
+        ///////////////////////////////////////////////////////////////////////////
+        namespace x3 = boost::spirit::x3;
 
-    struct nil {};
-    struct unary;
-    struct expression;
+        struct nil {
+        };
+        struct unary;
+        struct expression;
 
-    struct variable : x3::position_tagged
-    {
-        variable(std::string const& name = "") : name(name) {}
-        std::string name;
-    };
+        struct variable : x3::position_tagged {
+            variable(std::string const &name = "") : name(name) {}
 
-    struct operand :
-        x3::variant<
-            nil
-          , unsigned int
-          , variable
-          , x3::forward_ast<unary>
-          , x3::forward_ast<expression>
-        >
-    {
-        using base_type::base_type;
-        using base_type::operator=;
-    };
-    
-    enum optoken
-    {
-        op_plus,
-        op_minus,
-        op_times,
-        op_divide,
-        op_modulo,
-        op_positive,
-        op_negative,
-        op_logical_not,
-        op_bitwise_not,
-        op_equal,
-        op_not_equal,
-        op_less,
-        op_less_equal,
-        op_greater,
-        op_greater_equal,
-        op_and,
-        op_or
-    };
+            std::string name;
+        };
 
-    struct unary
-    {
-        optoken operator_;
-        operand operand_;
-    };
+        struct operand :
+                x3::variant<
+                        nil, unsigned int, variable, x3::forward_ast<unary>, x3::forward_ast<expression>
+                > {
+            using base_type::base_type;
+            using base_type::operator=;
+        };
 
-    struct operation : x3::position_tagged
-    {
-        optoken operator_;
-        operand operand_;
-    };
+        enum optoken {
+            op_plus,
+            op_minus,
+            op_times,
+            op_divide,
+            op_modulo,
+            op_positive,
+            op_negative,
+            op_logical_not,
+            op_bitwise_not,
+            op_equal,
+            op_not_equal,
+            op_less,
+            op_less_equal,
+            op_greater,
+            op_greater_equal,
+            op_and,
+            op_or
+        };
 
-    struct expression : x3::position_tagged
-    {
-        operand first;
-        std::list<operation> rest;
-    };
+        struct unary {
+            optoken operator_;
+            operand operand_;
+        };
 
-    struct assignment : x3::position_tagged
-    {
-        variable lhs;
-        expression rhs;
-    };
+        struct operation : x3::position_tagged {
+            optoken operator_;
+            operand operand_;
+        };
 
-    struct variable_declaration
-    {
-        assignment assign;
-    };
-    
-    struct if_statement;
-    struct while_statement;
-    struct statement_list;
+        struct expression : x3::position_tagged {
+            operand first;
+            std::list<operation> rest;
+        };
 
-    struct statement :
-        x3::variant<
-            variable_declaration
-          , assignment
-          , boost::recursive_wrapper<if_statement>
-          , boost::recursive_wrapper<while_statement>
-          , boost::recursive_wrapper<statement_list>
-        >
-    {
-        using base_type::base_type;
-        using base_type::operator=;
-    };
-    
-    struct statement_list : std::list<statement> {};
+        struct assignment : x3::position_tagged {
+            variable lhs;
+            expression rhs;
+        };
 
-    struct if_statement
-    {
-        expression condition;
-        statement then;
-        boost::optional<statement> else_;
-    };
+        struct variable_declaration {
+            assignment assign;
+        };
 
-    struct while_statement
-    {
-        expression condition;
-        statement body;
-    };
+        struct if_statement;
+        struct while_statement;
+        struct statement_list;
 
-    // print functions for debugging
-    inline std::ostream& operator<<(std::ostream& out, nil)
-    {
-        out << "nil";
-        return out;
+        struct statement :
+                x3::variant<
+                        variable_declaration, assignment, boost::recursive_wrapper<if_statement>, boost::recursive_wrapper<while_statement>, boost::recursive_wrapper<statement_list>
+                > {
+            using base_type::base_type;
+            using base_type::operator=;
+        };
+
+        struct statement_list : std::list<statement> {
+        };
+
+        struct if_statement {
+            expression condition;
+            statement then;
+            boost::optional<statement> else_;
+        };
+
+        struct while_statement {
+            expression condition;
+            statement body;
+        };
+
+        // print functions for debugging
+        inline std::ostream &operator<<(std::ostream &out, nil) {
+            out << "nil";
+            return out;
+        }
+
+        inline std::ostream &operator<<(std::ostream &out, variable const &var) {
+            out << var.name;
+            return out;
+        }
     }
-
-    inline std::ostream& operator<<(std::ostream& out, variable const& var)
-    {
-        out << var.name; return out;
-    }
-}}
+}
 
 #endif

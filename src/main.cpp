@@ -15,6 +15,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_SPIRIT_X3_DEBUG
+
 #include "ast.hpp"
 #include "vm.hpp"
 #include "compiler.hpp"
@@ -27,8 +28,7 @@
 //  Main program
 ///////////////////////////////////////////////////////////////////////////////
 int
-main()
-{
+main() {
     std::cout << "/////////////////////////////////////////////////////////\n\n";
     std::cout << "Statement parser...\n\n";
     std::cout << "/////////////////////////////////////////////////////////\n\n";
@@ -42,8 +42,7 @@ main()
 
     std::string str;
     std::string source;
-    while (std::getline(std::cin, str))
-    {
+    while (std::getline(std::cin, str)) {
         if (str.empty())
             break;
         source += str + '\n';
@@ -67,22 +66,20 @@ main()
 
     // Our parser
     auto const parser =
-        // we pass our error handler to the parser so we can access
-        // it later on in our on_error and on_sucess handlers
-        with<client::parser::error_handler_tag>(std::ref(error_handler))
-        [
-            client::statement()
-        ];
+            // we pass our error handler to the parser so we can access
+            // it later on in our on_error and on_sucess handlers
+            with<client::parser::error_handler_tag>(std::ref(error_handler))
+            [
+                    client::statement()
+            ];
 
     using boost::spirit::x3::ascii::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
 
     std::cout << "-------------------------\n";
 
-    if (success && iter == end)
-    {
-        if (compile.start(ast))
-        {
+    if (success && iter == end) {
+        if (compile.start(ast)) {
             std::cout << "Success\n";
             std::cout << "-------------------------\n";
             vm.execute(program());
@@ -94,14 +91,10 @@ main()
             std::cout << "-------------------------\n";
             std::cout << "Results------------------\n\n";
             program.print_variables(vm.get_stack());
-        }
-        else
-        {
+        } else {
             std::cout << "Compile failure\n";
         }
-    }
-    else
-    {
+    } else {
         std::cout << "Parse failure\n";
     }
 

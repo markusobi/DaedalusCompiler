@@ -11,31 +11,31 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::unary,
-    operator_, operand_
+                          operator_, operand_
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::operation,
-    operator_, operand_
+                          operator_, operand_
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::expression,
-    first, rest
+                          first, rest
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::variable_declaration,
-    assign
+                          assign
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::assignment,
-    lhs, rhs
+                          lhs, rhs
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::if_statement,
-    condition, then, else_
+                          condition, then, else_
 )
 
 BOOST_FUSION_ADAPT_STRUCT(client::ast::while_statement,
-    condition, body
+                          condition, body
 )
 
 #endif

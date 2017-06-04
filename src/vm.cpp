@@ -7,22 +7,16 @@
 #include "vm.hpp"
 #include <boost/assert.hpp>
 
-namespace client
-{
+namespace client {
     int vmachine::execute(
-        std::vector<int> const& code
-      , std::vector<int>::const_iterator pc
-      , std::vector<int>::iterator frame_ptr
-    )
-    {
+            std::vector<int> const &code, std::vector<int>::const_iterator pc, std::vector<int>::iterator frame_ptr
+    ) {
         std::vector<int>::iterator stack_ptr = frame_ptr;
 
-        while (pc != code.end())
-        {
+        while (pc != code.end()) {
             BOOST_ASSERT(pc != code.end());
 
-            switch (*pc++)
-            {
+            switch (*pc++) {
                 case op_neg:
                     stack_ptr[-1] = -stack_ptr[-1];
                     break;
@@ -137,23 +131,20 @@ namespace client
                     stack_ptr = stack.begin() + *pc++;
                     break;
 
-                case op_call:
-                    {
-                        int nargs = *pc++;
-                        int jump = *pc++;
+                case op_call: {
+                    int nargs = *pc++;
+                    int jump = *pc++;
 
-                        // a function call is a recursive call to execute
-                        int r = execute(
-                            code
-                          , code.begin() + jump
-                          , stack_ptr - nargs
-                        );
+                    // a function call is a recursive call to execute
+                    int r = execute(
+                            code, code.begin() + jump, stack_ptr - nargs
+                    );
 
-                        // cleanup after return from function
-                        stack_ptr[-nargs] = r;      //  get return value
-                        stack_ptr -= (nargs - 1);   //  the stack will now contain
-                                                    //  the return value
-                    }
+                    // cleanup after return from function
+                    stack_ptr[-nargs] = r;      //  get return value
+                    stack_ptr -= (nargs - 1);   //  the stack will now contain
+                    //  the return value
+                }
                     break;
 
                 case op_return:
