@@ -27,8 +27,12 @@ namespace client
                     stack_ptr[-1] = -stack_ptr[-1];
                     break;
 
-                case op_not:
+                case op_lognot:
                     stack_ptr[-1] = !bool(stack_ptr[-1]);
+                    break;
+
+                case op_bitnot:
+                    stack_ptr[-1] = ~stack_ptr[-1];
                     break;
 
                 case op_add:

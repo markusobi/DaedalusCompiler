@@ -14,7 +14,7 @@
 //  [ JDG June 6, 2014 ]        Ported from qi calc8 example.
 //
 ///////////////////////////////////////////////////////////////////////////////
-
+#define BOOST_SPIRIT_X3_DEBUG
 #include "ast.hpp"
 #include "vm.hpp"
 #include "compiler.hpp"

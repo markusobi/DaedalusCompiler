@@ -19,7 +19,6 @@ namespace client { namespace parser
 {
     using x3::uint_;
     using x3::char_;
-    using x3::bool_;
     using x3::raw;
     using x3::lexeme;
     using namespace x3::ascii;
@@ -71,18 +70,29 @@ namespace client { namespace parser
             ;
 
         unary_op.add
-            ("+", ast::op_positive)
-            ("-", ast::op_negative)
-            ("!", ast::op_not)
+                ("+", ast::op_positive)
+                ("-", ast::op_negative)
+                ("!", ast::op_logical_not)
+                ("~", ast::op_bitwise_not)
             ;
 
+        // reserved keywords: class|prototype|if|else|while|return|int|float|string|instance|func|void|var|const
+        // forbidden in variable names
         keywords.add
-            ("var")
-            ("true")
-            ("false")
-            ("if")
-            ("else")
-            ("while")
+                ("class")
+                ("prototype")
+                ("if")
+                ("else")
+                ("while")
+                ("return")
+                ("int")
+                ("float")
+                ("string")
+                ("instance")
+                ("func")
+                ("void")
+                ("var")
+                ("const")
             ;
     }
 
@@ -147,9 +157,8 @@ namespace client { namespace parser
 
     auto const primary_expr_def =
             uint_
-        |   bool_
         |   (!keywords >> identifier)
-        |   '(' > expression > ')'
+        |   ( '(' > expression > ')' )
         ;
 
     auto const expression_def = logical_expr;

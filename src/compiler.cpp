@@ -83,8 +83,12 @@ namespace client { namespace code_gen
                     line += "      op_neg";
                     break;
 
-                case op_not:
-                    line += "      op_not";
+                case op_lognot:
+                    line += "      op_lognot";
+                    break;
+
+                case op_bitnot:
+                    line += "      op_bitnot";
                     break;
 
                 case op_add:
@@ -258,7 +262,8 @@ namespace client { namespace code_gen
         switch (x.operator_)
         {
             case ast::op_negative: program.op(op_neg); break;
-            case ast::op_not: program.op(op_not); break;
+            case ast::op_logical_not: program.op(op_lognot); break;
+            case ast::op_bitwise_not: program.op(op_bitnot); break;
             case ast::op_positive: break;
             default: BOOST_ASSERT(0); return false;
         }

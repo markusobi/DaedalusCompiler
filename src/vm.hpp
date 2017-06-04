@@ -22,7 +22,8 @@ namespace client
         op_mul,         //  multiply top two stack entries
         op_div,         //  divide top two stack entries
 
-        op_not,         //  boolean negate the top stack entry
+        op_lognot,      //  logical negate the top stack entry
+        op_bitnot,      //  bitwise negate the top stack entry
         op_eq,          //  compare the top two stack entries for ==
         op_neq,         //  compare the top two stack entries for !=
         op_lt,          //  compare the top two stack entries for <
