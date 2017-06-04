@@ -55,6 +55,11 @@ namespace client
                     stack_ptr[-1] /= stack_ptr[0];
                     break;
 
+                case op_mod:
+                    --stack_ptr;
+                    stack_ptr[-1] %= stack_ptr[0];
+                    break;
+
                 case op_eq:
                     --stack_ptr;
                     stack_ptr[-1] = bool(stack_ptr[-1] == stack_ptr[0]);

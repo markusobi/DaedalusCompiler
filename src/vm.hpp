@@ -21,6 +21,7 @@ namespace client
         op_sub,         //  subtract top two stack entries
         op_mul,         //  multiply top two stack entries
         op_div,         //  divide top two stack entries
+        op_mod,         //  modulo of the top two stack entries
 
         op_lognot,      //  logical negate the top stack entry
         op_bitnot,      //  bitwise negate the top stack entry

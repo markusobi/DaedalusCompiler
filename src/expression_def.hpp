@@ -65,8 +65,9 @@ namespace client { namespace parser
             ;
 
         multiplicative_op.add
-            ("*", ast::op_times)
-            ("/", ast::op_divide)
+                ("*", ast::op_times)
+                ("/", ast::op_divide)
+                ("%", ast::op_modulo)
             ;
 
         unary_op.add

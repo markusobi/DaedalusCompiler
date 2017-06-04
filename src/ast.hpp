@@ -49,6 +49,7 @@ namespace client { namespace ast
         op_minus,
         op_times,
         op_divide,
+        op_modulo,
         op_positive,
         op_negative,
         op_logical_not,

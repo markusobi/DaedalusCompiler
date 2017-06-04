@@ -107,6 +107,10 @@ namespace client { namespace code_gen
                     line += "      op_div";
                     break;
 
+                case op_mod:
+                    line += "      op_mod";
+                    break;
+
                 case op_eq:
                     line += "      op_eq";
                     break;
@@ -240,6 +244,7 @@ namespace client { namespace code_gen
             case ast::op_minus: program.op(op_sub); break;
             case ast::op_times: program.op(op_mul); break;
             case ast::op_divide: program.op(op_div); break;
+            case ast::op_modulo: program.op(op_mod); break;
 
             case ast::op_equal: program.op(op_eq); break;
             case ast::op_not_equal: program.op(op_neq); break;
