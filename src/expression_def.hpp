@@ -29,7 +29,8 @@ namespace client { namespace parser
 
     x3::symbols<ast::optoken> equality_op;
     x3::symbols<ast::optoken> relational_op;
-    x3::symbols<ast::optoken> logical_op;
+    x3::symbols<ast::optoken> logical_or_op;
+    x3::symbols<ast::optoken> logical_and_op;
     x3::symbols<ast::optoken> additive_op;
     x3::symbols<ast::optoken> multiplicative_op;
     x3::symbols<ast::optoken> unary_op;
@@ -42,10 +43,13 @@ namespace client { namespace parser
             return;
         once = true;
 
-        logical_op.add
-            ("&&", ast::op_and)
-            ("||", ast::op_or)
-            ;
+        logical_or_op.add
+                ("||", ast::op_or)
+                ;
+
+        logical_and_op.add
+                ("&&", ast::op_and)
+                ;
 
         equality_op.add
             ("==", ast::op_equal)
@@ -103,7 +107,8 @@ namespace client { namespace parser
 
     struct equality_expr_class;
     struct relational_expr_class;
-    struct logical_expr_class;
+    struct logical_or_expr_class;
+    struct logical_and_expr_class;
     struct additive_expr_class;
     struct multiplicative_expr_class;
     struct unary_expr_class;
@@ -111,7 +116,8 @@ namespace client { namespace parser
 
     typedef x3::rule<equality_expr_class, ast::expression> equality_expr_type;
     typedef x3::rule<relational_expr_class, ast::expression> relational_expr_type;
-    typedef x3::rule<logical_expr_class, ast::expression> logical_expr_type;
+    typedef x3::rule<logical_or_expr_class, ast::expression> logical_or_expr_type;
+    typedef x3::rule<logical_and_expr_class, ast::expression> logical_and_expr_type;
     typedef x3::rule<additive_expr_class, ast::expression> additive_expr_type;
     typedef x3::rule<multiplicative_expr_class, ast::expression> multiplicative_expr_type;
     typedef x3::rule<unary_expr_class, ast::operand> unary_expr_type;
@@ -120,21 +126,27 @@ namespace client { namespace parser
     expression_type const expression = "expression";
     equality_expr_type const equality_expr = "equality_expr";
     relational_expr_type const relational_expr = "relational_expr";
-    logical_expr_type const logical_expr = "logical_expr";
+    logical_or_expr_type const logical_or_expr = "logical_or_expr";
+    logical_and_expr_type const logical_and_expr = "logical_and_expr";
     additive_expr_type const additive_expr = "additive_expr";
     multiplicative_expr_type const multiplicative_expr = "multiplicative_expr";
     unary_expr_type const unary_expr = "unary_expr";
     primary_expr_type const primary_expr = "primary_expr";
 
-    auto const logical_expr_def =
+    auto const logical_or_expr_def =
+            logical_and_expr
+                    >> *(logical_or_op > logical_and_expr)
+    ;
+
+    auto const logical_and_expr_def =
             equality_expr
-        >> *(logical_op > equality_expr)
-        ;
+                    >> *(logical_and_op > equality_expr)
+    ;
 
     auto const equality_expr_def =
-            relational_expr
-        >> *(equality_op > relational_expr)
-        ;
+        relational_expr
+    >> *(equality_op > relational_expr)
+    ;
 
     auto const relational_expr_def =
             additive_expr
@@ -162,11 +174,12 @@ namespace client { namespace parser
         |   ( '(' > expression > ')' )
         ;
 
-    auto const expression_def = logical_expr;
+    auto const expression_def = logical_or_expr;
 
     BOOST_SPIRIT_DEFINE(
         expression
-      , logical_expr
+      , logical_or_expr
+      , logical_and_expr
       , equality_expr
       , relational_expr
       , additive_expr
