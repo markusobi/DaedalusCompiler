@@ -164,7 +164,7 @@ namespace client {
 
         auto const bitwise_or_expr_def =
                 bitwise_xor_expr
-                        >> *(bitwise_or_op >> bitwise_xor_expr);
+                        >> *(bitwise_or_op >> !bitwise_or_op > bitwise_xor_expr);
 
         auto const bitwise_xor_expr_def =
                 bitwise_and_expr
@@ -172,7 +172,7 @@ namespace client {
 
         auto const bitwise_and_expr_def =
                 equality_expr
-                        >> *(bitwise_and_op >> equality_expr);
+                        >> *(bitwise_and_op >> !bitwise_and_op > equality_expr);
 
         auto const equality_expr_def =
                 relational_expr
