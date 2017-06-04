@@ -22,7 +22,7 @@ namespace client {
                     break;
 
                 case op_lognot:
-                    stack_ptr[-1] = !bool(stack_ptr[-1]);
+                    stack_ptr[-1] = !stack_ptr[-1];
                     break;
 
                 case op_bitnot:
@@ -52,6 +52,16 @@ namespace client {
                 case op_mod:
                     --stack_ptr;
                     stack_ptr[-1] %= stack_ptr[0];
+                    break;
+
+                case op_shift_left:
+                    --stack_ptr;
+                    stack_ptr[-1] <<= stack_ptr[0];
+                    break;
+
+                case op_shift_right:
+                    --stack_ptr;
+                    stack_ptr[-1] >>= stack_ptr[0];
                     break;
 
                 case op_eq:
@@ -84,14 +94,29 @@ namespace client {
                     stack_ptr[-1] = bool(stack_ptr[-1] >= stack_ptr[0]);
                     break;
 
-                case op_and:
+                case op_bitwise_and:
                     --stack_ptr;
-                    stack_ptr[-1] = bool(stack_ptr[-1]) && bool(stack_ptr[0]);
+                    stack_ptr[-1] = stack_ptr[-1] & stack_ptr[0];
                     break;
 
-                case op_or:
+                case op_bitwise_xor:
                     --stack_ptr;
-                    stack_ptr[-1] = bool(stack_ptr[-1]) || bool(stack_ptr[0]);
+                    stack_ptr[-1] = stack_ptr[-1] ^ stack_ptr[0];
+                    break;
+
+                case op_bitwise_or:
+                    --stack_ptr;
+                    stack_ptr[-1] = stack_ptr[-1] | stack_ptr[0];
+                    break;
+
+                case op_logical_and:
+                    --stack_ptr;
+                    stack_ptr[-1] = stack_ptr[-1] && stack_ptr[0];
+                    break;
+
+                case op_logical_or:
+                    --stack_ptr;
+                    stack_ptr[-1] = stack_ptr[-1] || stack_ptr[0];
                     break;
 
                 case op_load:
@@ -120,7 +145,7 @@ namespace client {
                     break;
 
                 case op_jump_if:
-                    if (!bool(stack_ptr[-1]))
+                    if (!stack_ptr[-1])
                         pc += *pc;
                     else
                         ++pc;

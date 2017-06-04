@@ -49,14 +49,19 @@ namespace client {
             op_negative,
             op_logical_not,
             op_bitwise_not,
+            op_shift_left,
+            op_shift_right,
             op_equal,
             op_not_equal,
             op_less,
             op_less_equal,
             op_greater,
             op_greater_equal,
-            op_and,
-            op_or
+            op_bitwise_and,
+            op_bitwise_xor,
+            op_bitwise_or,
+            op_logical_and,
+            op_logical_or
         };
 
         struct unary {

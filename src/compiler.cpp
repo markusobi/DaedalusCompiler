@@ -100,6 +100,14 @@ namespace client {
                         line += "      op_mod";
                         break;
 
+                    case op_shift_left:
+                        line += "      op_shift_left";
+                        break;
+
+                    case op_shift_right:
+                        line += "      op_shift_right";
+                        break;
+
                     case op_eq:
                         line += "      op_eq";
                         break;
@@ -124,12 +132,24 @@ namespace client {
                         line += "      op_gte";
                         break;
 
-                    case op_and:
-                        line += "      op_and";
+                    case op_bitwise_or:
+                        line += "      op_bitwise_or";
                         break;
 
-                    case op_or:
-                        line += "      op_or";
+                    case op_bitwise_xor:
+                        line += "      op_bitwise_xor";
+                        break;
+
+                    case op_bitwise_and:
+                        line += "      op_bitwise_and";
+                        break;
+
+                    case op_logical_and:
+                        line += "      op_logical_and";
+                        break;
+
+                    case op_logical_or:
+                        line += "      op_logical_or";
                         break;
 
                     case op_load:
@@ -236,6 +256,13 @@ namespace client {
                     program.op(op_mod);
                     break;
 
+                case ast::op_shift_left:
+                    program.op(op_shift_left);
+                    break;
+                case ast::op_shift_right:
+                    program.op(op_shift_right);
+                    break;
+
                 case ast::op_equal:
                     program.op(op_eq);
                     break;
@@ -255,11 +282,21 @@ namespace client {
                     program.op(op_gte);
                     break;
 
-                case ast::op_and:
-                    program.op(op_and);
+                case ast::op_bitwise_or:
+                    program.op(op_bitwise_or);
                     break;
-                case ast::op_or:
-                    program.op(op_or);
+                case ast::op_bitwise_xor:
+                    program.op(op_bitwise_xor);
+                    break;
+                case ast::op_bitwise_and:
+                    program.op(op_bitwise_and);
+                    break;
+
+                case ast::op_logical_and:
+                    program.op(op_logical_and);
+                    break;
+                case ast::op_logical_or:
+                    program.op(op_logical_or);
                     break;
                 default:
                     BOOST_ASSERT(0);

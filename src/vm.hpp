@@ -32,8 +32,15 @@ namespace client
         op_gt,          //  compare the top two stack entries for >
         op_gte,         //  compare the top two stack entries for >=
 
-        op_and,         //  logical and top two stack entries
-        op_or,          //  logical or top two stack entries
+        op_bitwise_or,  // bitwise or operation on the top two stack entries
+        op_bitwise_xor, // bitwise xor operation on the top two stack entries
+        op_bitwise_and, // bitwise and operation on the top two stack entries
+
+        op_shift_left,  // bitwise shift left
+        op_shift_right, // bitwise shift right
+
+        op_logical_and, //  logical and top two stack entries
+        op_logical_or,  //  logical or top two stack entries
 
         op_load,        //  load a variable
         op_store,       //  store a variable
