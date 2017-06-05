@@ -7,24 +7,42 @@
 #include "vm.hpp"
 #include <boost/assert.hpp>
 #include <functional>
+#include <iostream>
 
 namespace client {
-    int vmachine::execute(
-            std::vector<int> const &code, std::vector<int>::const_iterator pc, std::vector<int>::iterator frame_ptr
+    int vmachine::execute(std::vector<int> const &code,
+                          std::vector<int>::const_iterator pc,
+                          const std::vector<int>::iterator frame_ptr
     ) {
+        // counter for locals
+        int n_locals = 0;
         std::vector<int>::iterator stack_ptr = frame_ptr;
-        std::function<int()> popInt = [&stack_ptr](){
+        std::function<int()> popInt = [&stack_ptr, frame_ptr, &n_locals](){
             int top = stack_ptr[-1];
             stack_ptr--;
+            BOOST_ASSERT(stack_ptr >= frame_ptr + n_locals);
             return top;
         };
+
         std::function<void(int)> pushInt = [&stack_ptr](int value){
             stack_ptr++;
             stack_ptr[-1] = value;
         };
 
+        std::function<void()> printStackFrame = [frame_ptr, &stack_ptr](){
+            auto frame_ptr_copy = frame_ptr;
+            int i = 0;
+            std::cout << "--- stack begin ---" << std::endl;
+            while (frame_ptr_copy != stack_ptr)
+            {
+                std::cout << "stack[" << i++ << "] = " << *frame_ptr_copy << std::endl;
+                frame_ptr_copy++;
+            }
+            std::cout << "--- stack end ---" << std::endl;
+        };
+
         while (pc != code.end()) {
-            BOOST_ASSERT(pc != code.end());
+            BOOST_ASSERT(pc < code.end() && pc >= code.begin());
 
             switch (*pc++) {
                 case op_pos:
@@ -32,7 +50,7 @@ namespace client {
                     break;
 
                 case op_neg:
-                    stack_ptr[-1] = -stack_ptr[-1];
+                    pushInt(-popInt());
                     break;
 
                 case op_lognot:
@@ -159,7 +177,8 @@ namespace client {
                     break;
 
                 case op_stk_adj:
-                    stack_ptr = stack.begin() + *pc++;
+                    n_locals = *pc++;
+                    stack_ptr = stack.begin() + n_locals;
                     break;
 
                 case op_call: {
