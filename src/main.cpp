@@ -16,6 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_SPIRIT_X3_DEBUG
 
+#include "visitors/DumpAstVisitor.hpp"
 #include "ast.hpp"
 #include "vm.hpp"
 #include "visitors/compiler.hpp"
@@ -75,6 +76,10 @@ main() {
 
     using boost::spirit::x3::ascii::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
+
+    // Run Visitors
+    ASTVisitors::DumpAstVisitor dumpAstVisitor(error_handler);
+    dumpAstVisitor.start(ast);
 
     std::cout << "-------------------------\n";
 

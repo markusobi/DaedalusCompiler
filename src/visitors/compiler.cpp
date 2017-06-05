@@ -330,17 +330,6 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::expression_visit_right_to_left(ast::expression const &x) const
-    {
-        if (!boost::apply_visitor(*this, x.first))
-            return false;
-        for (ast::operation const &oper : x.rest) {
-            if (!(*this)(oper))
-                return false;
-        }
-        return true;
-    }
-
     result_type compiler::operator()(ast::expression const &x) const
     {
         return expression_visit_left_to_right(x);
