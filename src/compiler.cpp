@@ -171,14 +171,6 @@ namespace client {
                         line += boost::lexical_cast<std::string>(*pc++);
                         break;
 
-                    case op_true:
-                        line += "      op_true";
-                        break;
-
-                    case op_false:
-                        line += "      op_false";
-                        break;
-
                     case op_jump: {
                         line += "      op_jump     ";
                         std::size_t pos = (pc - code.begin()) + *pc++;
@@ -222,11 +214,6 @@ namespace client {
 
         bool compiler::operator()(unsigned int x) const {
             program.op(op_int, x);
-            return true;
-        }
-
-        bool compiler::operator()(bool x) const {
-            program.op(x ? op_true : op_false);
             return true;
         }
 

@@ -146,14 +146,6 @@ namespace client {
                     *stack_ptr++ = *pc++;
                     break;
 
-                case op_true:
-                    *stack_ptr++ = true;
-                    break;
-
-                case op_false:
-                    *stack_ptr++ = false;
-                    break;
-
                 case op_jump:
                     pc += *pc;
                     break;
