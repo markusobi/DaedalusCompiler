@@ -6,106 +6,108 @@
 =============================================================================*/
 #pragma once
 
+#include <iostream>
 #include "ast.hpp"
 #include "error_handler.hpp"
 #include "config.hpp"
-#include <vector>
-#include <map>
 
 namespace ASTVisitors
 {
     ////////////////////////////////////////////////////////////////////////////
     //  The Base AST Visitor
+    //  Curiously Recurring Template Pattern (CRTP)
     ////////////////////////////////////////////////////////////////////////////
-    template <class Derived, class ErrorHandler_ = parser::error_handler_type>
+    template <class Derived, class ResultType = void, class ErrorHandler_ = parser::error_handler_type>
     class BaseVisitor
     {
     public:
-        typedef void ResultType;
+        // boost::apply_visitor demands a type named result_type
+        typedef ResultType result_type;
         typedef ErrorHandler_ ErrorHandler;
         typedef std::function<void(boost::spirit::x3::position_tagged, std::string const&)> error_handler_type;
 
         BaseVisitor(ErrorHandler const& error_handler) :
-                error_handler([&](boost::spirit::x3::position_tagged pos, std::string const& msg)
+                error_handler([&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
                 { error_handler(pos, msg); }
             )
         {}
 
-        ResultType operator()(ast::nil) const {
-            BOOST_ASSERT(0); return ResultType();
+        result_type operator()(ast::nil) const {
+            BOOST_ASSERT(0);
+            return result_type();
         }
 
-        ResultType operator()(unsigned int x) const {
+        result_type operator()(unsigned int x) const {
             // int literal
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::variable const& x) const {
+        result_type operator()(ast::variable const& x) const {
             // variable usage or declaration
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::operation const& x) const {
+        result_type operator()(ast::operation const& x) const {
             // operation i.e. * 2
-            boost::apply_visitor(*this, x.operand_);
-            return ResultType();
+            boost::apply_visitor(asDerived(), x.operand_);
+            return result_type();
         }
 
-        ResultType operator()(ast::unary const& x) const {
+        result_type operator()(ast::unary const& x) const {
             // unary operation
-            boost::apply_visitor(*this, x.operand_);
-            return ResultType();
+            boost::apply_visitor(asDerived(), x.operand_);
+            return result_type();
         }
 
-        ResultType operator()(ast::expression const& x) const {
-            boost::apply_visitor(*this, x.first);
+        result_type operator()(ast::expression const& x) const {
+            boost::apply_visitor(asDerived(), x.first);
             for (ast::operation const &oper : x.rest) {
                 asDerived()(oper);
             }
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::assignment const& x) const {
+        result_type operator()(ast::assignment const& x) const {
             asDerived()(x.rhs);
             asDerived()(x.lhs);
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::variable_declaration const& x) const {
+        result_type operator()(ast::variable_declaration const& x) const {
             asDerived()(x.assign.lhs);
             asDerived()(x.assign.rhs);
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::statement const& x) const {
-            boost::apply_visitor(*this, x);
-            return ResultType();
+        result_type operator()(ast::statement const& x) const {
+            boost::apply_visitor(asDerived(), x);
+            return result_type();
         }
 
-        ResultType operator()(ast::statement_list const& x) const {
+        result_type operator()(ast::statement_list const& x) const {
             for (auto const &statement : x) {
                 asDerived()(statement);
             }
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::if_statement const& x) const {
+        result_type operator()(ast::if_statement const& x) const {
             asDerived()(x.condition);
             asDerived()(x.then);
             if (x.else_)
                 asDerived()(*x.else_);
-            return ResultType();
+            return result_type();
         }
 
-        ResultType operator()(ast::while_statement const& x) const {
+        result_type operator()(ast::while_statement const& x) const {
             asDerived()(x.condition);
             asDerived()(x.body);
             return void();
         }
 
-        ResultType start(ast::statement_list const& x) const {
+        result_type start(ast::statement_list const& x) const {
             asDerived()(x);
-            return ResultType();
+            return result_type();
         }
 
         error_handler_type error_handler;
