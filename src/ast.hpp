@@ -74,6 +74,12 @@ namespace client {
             operand operand_;
         };
 
+        struct binary_expression : x3::position_tagged {
+            operand left;
+            operand right;
+            optoken operator_;
+        };
+
         struct expression : x3::position_tagged {
             operand first;
             std::list<operation> rest;

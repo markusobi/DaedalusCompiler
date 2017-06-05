@@ -70,6 +70,8 @@ namespace client { namespace code_gen
         bool operator()(ast::operation const& x) const;
         bool operator()(ast::unary const& x) const;
         bool operator()(ast::expression const& x) const;
+        bool expression_visit_left_to_right(ast::expression const& x) const;
+        bool expression_visit_right_to_left(ast::expression const& x) const;
         bool operator()(ast::assignment const& x) const;
         bool operator()(ast::variable_declaration const& x) const;
         bool operator()(ast::statement_list const& x) const;

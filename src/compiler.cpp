@@ -319,7 +319,8 @@ namespace client {
             return true;
         }
 
-        bool compiler::operator()(ast::expression const &x) const {
+        bool compiler::expression_visit_left_to_right(ast::expression const &x) const
+        {
             if (!boost::apply_visitor(*this, x.first))
                 return false;
             for (ast::operation const &oper : x.rest) {
@@ -327,6 +328,22 @@ namespace client {
                     return false;
             }
             return true;
+        }
+
+        bool compiler::expression_visit_right_to_left(ast::expression const &x) const
+        {
+            if (!boost::apply_visitor(*this, x.first))
+                return false;
+            for (ast::operation const &oper : x.rest) {
+                if (!(*this)(oper))
+                    return false;
+            }
+            return true;
+        }
+
+        bool compiler::operator()(ast::expression const &x) const
+        {
+            return expression_visit_left_to_right(x);
         }
 
         bool compiler::operator()(ast::assignment const &x) const {
