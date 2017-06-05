@@ -18,7 +18,7 @@
 
 #include "ast.hpp"
 #include "vm.hpp"
-#include "compiler.hpp"
+#include "visitors/compiler.hpp"
 #include "statement.hpp"
 #include "error_handler.hpp"
 #include "config.hpp"
@@ -48,29 +48,29 @@ main() {
         source += str + '\n';
     }
 
-    using client::parser::iterator_type;
+    using parser::iterator_type;
     iterator_type iter(source.begin());
     iterator_type end(source.end());
 
 
-    client::vmachine vm;                                    // Our virtual machine
-    client::code_gen::program program;                      // Our VM program
-    client::ast::statement_list ast;                        // Our AST
+    vmachine vm;                                    // Our virtual machine
+    code_gen::program program;                      // Our VM program
+    ast::statement_list ast;                        // Our AST
 
     using boost::spirit::x3::with;
-    using client::parser::error_handler_type;
+    using parser::error_handler_type;
     error_handler_type error_handler(iter, end, std::cerr); // Our error handler
 
     // Our compiler
-    client::code_gen::compiler compile(program, error_handler);
+    code_gen::compiler compile(program, error_handler);
 
     // Our parser
     auto const parser =
             // we pass our error handler to the parser so we can access
-            // it later on in our on_error and on_sucess handlers
-            with<client::parser::error_handler_tag>(std::ref(error_handler))
+            // it later on in our on_error and on_success handlers
+            with<parser::error_handler_tag>(std::ref(error_handler))
             [
-                    client::statement()
+                    getStatementParser()
             ];
 
     using boost::spirit::x3::ascii::space;

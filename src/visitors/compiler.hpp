@@ -12,7 +12,7 @@
 #include <vector>
 #include <map>
 
-namespace client { namespace code_gen
+namespace code_gen
 {
     ///////////////////////////////////////////////////////////////////////////
     //  The Program
@@ -49,12 +49,12 @@ namespace client { namespace code_gen
     {
         typedef bool result_type;
         typedef std::function<
-            void(x3::position_tagged, std::string const&)>
+            void(boost::spirit::x3::position_tagged, std::string const&)>
         error_handler_type;
 
         template <typename ErrorHandler>
         compiler(
-            client::code_gen::program& program
+            code_gen::program& program
           , ErrorHandler const& error_handler)
           : program(program)
           , error_handler(
@@ -63,27 +63,27 @@ namespace client { namespace code_gen
             )
         {}
 
-        bool operator()(ast::nil) const { BOOST_ASSERT(0); return false; }
-        bool operator()(unsigned int x) const;
-        bool operator()(bool x) const;
-        bool operator()(ast::variable const& x) const;
-        bool operator()(ast::operation const& x) const;
-        bool operator()(ast::unary const& x) const;
-        bool operator()(ast::expression const& x) const;
-        bool expression_visit_left_to_right(ast::expression const& x) const;
-        bool expression_visit_right_to_left(ast::expression const& x) const;
-        bool operator()(ast::assignment const& x) const;
-        bool operator()(ast::variable_declaration const& x) const;
-        bool operator()(ast::statement_list const& x) const;
-        bool operator()(ast::statement const& x) const;
-        bool operator()(ast::if_statement const& x) const;
-        bool operator()(ast::while_statement const& x) const;
+        result_type operator()(ast::nil) const { BOOST_ASSERT(0); return false; }
+        result_type operator()(unsigned int x) const;
+        result_type operator()(bool x) const;
+        result_type operator()(ast::variable const& x) const;
+        result_type operator()(ast::operation const& x) const;
+        result_type operator()(ast::unary const& x) const;
+        result_type operator()(ast::expression const& x) const;
+        result_type expression_visit_left_to_right(ast::expression const& x) const;
+        result_type expression_visit_right_to_left(ast::expression const& x) const;
+        result_type operator()(ast::assignment const& x) const;
+        result_type operator()(ast::variable_declaration const& x) const;
+        result_type operator()(ast::statement_list const& x) const;
+        result_type operator()(ast::statement const& x) const;
+        result_type operator()(ast::if_statement const& x) const;
+        result_type operator()(ast::while_statement const& x) const;
 
         bool start(ast::statement_list const& x) const;
 
-        client::code_gen::program& program;
+        code_gen::program& program;
         error_handler_type error_handler;
     };
-}}
+}
 
 #endif

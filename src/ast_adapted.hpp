@@ -10,31 +10,31 @@
 #include "ast.hpp"
 #include <boost/fusion/include/adapt_struct.hpp>
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::unary,
+BOOST_FUSION_ADAPT_STRUCT(ast::unary,
                           operator_, operand_
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::operation,
+BOOST_FUSION_ADAPT_STRUCT(ast::operation,
                           operator_, operand_
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::expression,
+BOOST_FUSION_ADAPT_STRUCT(ast::expression,
                           first, rest
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::variable_declaration,
+BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
                           assign
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::assignment,
+BOOST_FUSION_ADAPT_STRUCT(ast::assignment,
                           lhs, rhs
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::if_statement,
+BOOST_FUSION_ADAPT_STRUCT(ast::if_statement,
                           condition, then, else_
 )
 
-BOOST_FUSION_ADAPT_STRUCT(client::ast::while_statement,
+BOOST_FUSION_ADAPT_STRUCT(ast::while_statement,
                           condition, body
 )
 
