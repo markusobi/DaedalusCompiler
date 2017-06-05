@@ -45,7 +45,7 @@ namespace client {
                 +(variable_declaration | assignment);
 
         auto const variable_declaration_def =
-                lexeme["var" >> !(alnum | '_')] // make sure we have whole words
+                lexeme["var" >> !(alnum | '_')] // look ahead for word end
                 > assignment;
 
         auto const assignment_def =

@@ -16,6 +16,7 @@ namespace client
     ///////////////////////////////////////////////////////////////////////////
     enum byte_code
     {
+        op_pos,         //  positate the top stack entry
         op_neg,         //  negate the top stack entry
         op_add,         //  add top two stack entries
         op_sub,         //  subtract top two stack entries

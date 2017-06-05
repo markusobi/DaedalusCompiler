@@ -6,17 +6,31 @@
 =============================================================================*/
 #include "vm.hpp"
 #include <boost/assert.hpp>
+#include <functional>
 
 namespace client {
     int vmachine::execute(
             std::vector<int> const &code, std::vector<int>::const_iterator pc, std::vector<int>::iterator frame_ptr
     ) {
         std::vector<int>::iterator stack_ptr = frame_ptr;
+        std::function<int()> popInt = [&stack_ptr](){
+            int top = stack_ptr[-1];
+            stack_ptr--;
+            return top;
+        };
+        std::function<void(int)> pushInt = [&stack_ptr](int value){
+            stack_ptr++;
+            stack_ptr[-1] = value;
+        };
 
         while (pc != code.end()) {
             BOOST_ASSERT(pc != code.end());
 
             switch (*pc++) {
+                case op_pos:
+                    stack_ptr[-1] = +stack_ptr[-1];
+                    break;
+
                 case op_neg:
                     stack_ptr[-1] = -stack_ptr[-1];
                     break;

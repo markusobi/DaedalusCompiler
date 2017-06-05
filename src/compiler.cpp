@@ -68,6 +68,10 @@ namespace client {
                 std::size_t address = pc - code.begin();
 
                 switch (*pc++) {
+                    case op_pos:
+                        line += "      op_pos";
+                        break;
+
                     case op_neg:
                         line += "      op_neg";
                         break;
@@ -309,6 +313,9 @@ namespace client {
             if (!boost::apply_visitor(*this, x.operand_))
                 return false;
             switch (x.operator_) {
+                case ast::op_positive:
+                    program.op(op_pos);
+                    break;
                 case ast::op_negative:
                     program.op(op_neg);
                     break;
@@ -317,8 +324,6 @@ namespace client {
                     break;
                 case ast::op_bitwise_not:
                     program.op(op_bitnot);
-                    break;
-                case ast::op_positive:
                     break;
                 default:
                     BOOST_ASSERT(0);
