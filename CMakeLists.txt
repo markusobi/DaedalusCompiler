@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.7)
 project(daedalusx3)
 
 set(CMAKE_CXX_STANDARD 14)
-add_compile_options(-Wall -O3 -DNDEBUG)
+#add_compile_options(-Wall -O3 -DNDEBUG)
 
 set(BOOST_ROOT ~/packages/boost)
 find_package(Boost)
