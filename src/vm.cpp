@@ -42,6 +42,7 @@ int vmachine::execute(std::vector<int> const &code,
 
     while (pc != code.end()) {
         BOOST_ASSERT(pc < code.end() && pc >= code.begin());
+        int a, b;
 
         switch (*pc++) {
             case op_pos:
@@ -61,93 +62,111 @@ int vmachine::execute(std::vector<int> const &code,
                 break;
 
             case op_add:
-                --stack_ptr;
-                stack_ptr[-1] += stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a + b);
                 break;
 
             case op_sub:
-                --stack_ptr;
-                stack_ptr[-1] -= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a - b);
                 break;
 
             case op_mul:
-                --stack_ptr;
-                stack_ptr[-1] *= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a * b);
                 break;
 
             case op_div:
-                --stack_ptr;
-                stack_ptr[-1] /= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a / b);
                 break;
 
             case op_mod:
-                --stack_ptr;
-                stack_ptr[-1] %= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a % b);
                 break;
 
             case op_shift_left:
-                --stack_ptr;
-                stack_ptr[-1] <<= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a << b);
                 break;
 
             case op_shift_right:
-                --stack_ptr;
-                stack_ptr[-1] >>= stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a >> b);
                 break;
 
             case op_eq:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] == stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a == b);
                 break;
 
             case op_neq:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] != stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a != b);
                 break;
 
             case op_lt:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] < stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a < b);
                 break;
 
             case op_lte:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] <= stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a <= b);
                 break;
 
             case op_gt:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] > stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a > b);
                 break;
 
             case op_gte:
-                --stack_ptr;
-                stack_ptr[-1] = bool(stack_ptr[-1] >= stack_ptr[0]);
+                b = popInt();
+                a = popInt();
+                pushInt(a >= b);
                 break;
 
             case op_bitwise_and:
-                --stack_ptr;
-                stack_ptr[-1] = stack_ptr[-1] & stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a & b);
                 break;
 
             case op_bitwise_xor:
-                --stack_ptr;
-                stack_ptr[-1] = stack_ptr[-1] ^ stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a ^ b);
                 break;
 
             case op_bitwise_or:
-                --stack_ptr;
-                stack_ptr[-1] = stack_ptr[-1] | stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a | b);
                 break;
 
             case op_logical_and:
-                --stack_ptr;
-                stack_ptr[-1] = stack_ptr[-1] && stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a && b);
                 break;
 
             case op_logical_or:
-                --stack_ptr;
-                stack_ptr[-1] = stack_ptr[-1] || stack_ptr[0];
+                b = popInt();
+                a = popInt();
+                pushInt(a || b);
                 break;
 
             case op_load:
