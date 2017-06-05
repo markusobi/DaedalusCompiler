@@ -46,7 +46,7 @@ namespace client {
 
             switch (*pc++) {
                 case op_pos:
-                    stack_ptr[-1] = +stack_ptr[-1];
+                    pushInt(+popInt());
                     break;
 
                 case op_neg:
@@ -54,11 +54,11 @@ namespace client {
                     break;
 
                 case op_lognot:
-                    stack_ptr[-1] = !stack_ptr[-1];
+                    pushInt(!popInt());
                     break;
 
                 case op_bitnot:
-                    stack_ptr[-1] = ~stack_ptr[-1];
+                    pushInt(~popInt());
                     break;
 
                 case op_add:
