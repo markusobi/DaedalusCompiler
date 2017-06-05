@@ -36,8 +36,6 @@ namespace Visitors
         result_type operator()(ast::operation const& x) const;
         result_type operator()(ast::unary const& x) const;
         result_type operator()(ast::expression const& x) const;
-        result_type expression_visit_left_to_right(ast::expression const& x) const;
-        result_type expression_visit_right_to_left(ast::expression const& x) const;
         result_type operator()(ast::assignment const& x) const;
         result_type operator()(ast::variable_declaration const& x) const;
         result_type operator()(ast::statement_list const& x) const;
