@@ -4,8 +4,7 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CALC9_EXPRESSION_DEF_HPP)
-#define BOOST_SPIRIT_X3_CALC9_EXPRESSION_DEF_HPP
+#pragma once
 
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
@@ -14,6 +13,8 @@
 #include "expression.hpp"
 #include "common.hpp"
 #include "error_handler.hpp"
+#include <map>
+#include <iostream>
 
 namespace parser {
     using x3::uint_;
@@ -25,25 +26,34 @@ namespace parser {
     ////////////////////////////////////////////////////////////////////////////
     // Tokens
     ////////////////////////////////////////////////////////////////////////////
+    namespace {
+        std::map<ast::optoken, std::string> op_names;
 
-    x3::symbols <ast::optoken> logical_or_op;
-    x3::symbols <ast::optoken> logical_and_op;
-    x3::symbols <ast::optoken> bitwise_or_op;
-    x3::symbols <ast::optoken> bitwise_xor_op;
-    x3::symbols <ast::optoken> bitwise_and_op;
-    x3::symbols <ast::optoken> equality_op;
-    x3::symbols <ast::optoken> relational_op;
-    x3::symbols <ast::optoken> bitshift_op;
-    x3::symbols <ast::optoken> additive_op;
-    x3::symbols <ast::optoken> multiplicative_op;
-    x3::symbols <ast::optoken> unary_op;
-    x3::symbols<> keywords;
+        x3::symbols <ast::optoken> logical_or_op;
+        x3::symbols <ast::optoken> logical_and_op;
+        x3::symbols <ast::optoken> bitwise_or_op;
+        x3::symbols <ast::optoken> bitwise_xor_op;
+        x3::symbols <ast::optoken> bitwise_and_op;
+        x3::symbols <ast::optoken> equality_op;
+        x3::symbols <ast::optoken> relational_op;
+        x3::symbols <ast::optoken> bitshift_op;
+        x3::symbols <ast::optoken> additive_op;
+        x3::symbols <ast::optoken> multiplicative_op;
+        x3::symbols <ast::optoken> unary_op;
+        x3::symbols<> keywords;
+    }
 
     void add_keywords() {
         static bool once = false;
         if (once)
             return;
         once = true;
+
+        std::map<ast::optoken, std::string> op_names_local;
+        auto registerOperator = [](x3::symbols<ast::optoken>& parser, const std::string name, ast::optoken id){
+            op_names[id] = name;
+            parser.add(name, id);
+        };
 
         logical_or_op.add
                 ("||", ast::op_logical_or);
@@ -88,6 +98,16 @@ namespace parser {
                 ("-", ast::op_negative)
                 ("!", ast::op_logical_not)
                 ("~", ast::op_bitwise_not);
+
+        std::list<x3::symbols<ast::optoken>> tables = {logical_or_op, logical_and_op, bitwise_or_op, bitwise_xor_op, bitwise_and_op,
+                                                       equality_op, relational_op, bitshift_op, additive_op, multiplicative_op, unary_op};
+
+        for (auto& table : tables)
+        {
+            table.add.sym.lookup.get()->for_each([](const std::string name, ast::optoken id){
+                op_names[id] = name;
+            });
+        }
 
         // reserved keywords: class|prototype|if|else|while|return|int|float|string|instance|func|void|var|const
         // forbidden in variable names
@@ -221,10 +241,7 @@ namespace parser {
 
 }
 
-
 parser::expression_type const &getExpressionParser() {
     parser::add_keywords();
     return parser::expression;
 }
-
-#endif

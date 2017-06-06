@@ -28,9 +28,15 @@ namespace ASTVisitors
         m_Indentation += indent;
     }
 
-    void PrettyPrinter::writeLine(const std::string& line)
+    void PrettyPrinter::writeIndentedLine(const std::string &line)
     {
-        *this << indent() << line;
+        writeIndented(line);
+        *this << '\n';
+    }
+
+    void PrettyPrinter::writeIndented(const std::string &str)
+    {
+        *this << indent() << str;
     }
 
     std::string PrettyPrinter::indent()
