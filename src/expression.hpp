@@ -4,11 +4,11 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CALC9_EXPRESSION_HPP)
-#define BOOST_SPIRIT_X3_CALC9_EXPRESSION_HPP
+#pragma once
 
 #include <boost/spirit/home/x3.hpp>
 #include "ast.hpp"
+#include <map>
 
 namespace x3 = boost::spirit::x3;
 namespace parser {
@@ -19,5 +19,4 @@ namespace parser {
 }
 
 parser::expression_type const &getExpressionParser();
-
-#endif
+const std::map<ast::optoken, std::string>& getOpTokenLookup();

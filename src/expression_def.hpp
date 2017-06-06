@@ -13,7 +13,6 @@
 #include "expression.hpp"
 #include "common.hpp"
 #include "error_handler.hpp"
-#include <map>
 #include <iostream>
 
 namespace parser {
@@ -244,4 +243,9 @@ namespace parser {
 parser::expression_type const &getExpressionParser() {
     parser::add_keywords();
     return parser::expression;
+}
+
+const std::map<ast::optoken, std::string>& getOpTokenLookup() {
+    parser::add_keywords();
+    return parser::op_names;
 }

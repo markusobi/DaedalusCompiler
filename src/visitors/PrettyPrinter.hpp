@@ -3,7 +3,7 @@
 #include "BaseVisitor.hpp"
 #include <ostream>
 #include <fstream>
-#include <expression_def.hpp>
+#include <expression.hpp>
 
 namespace ASTVisitors
 {
@@ -43,13 +43,13 @@ namespace ASTVisitors
 
         result_type operator()(ast::operation& x)
         {
-            *this << " " << parser::op_names[x.operator_] << " ";
+            *this << " " << getOpTokenLookup().at(x.operator_) << " ";
             return boost::apply_visitor(*this, x.operand_);
         }
 
         result_type operator()(ast::unary& x)
         {
-            *this << parser::op_names[x.operator_];
+            *this << getOpTokenLookup().at(x.operator_);
             return boost::apply_visitor(*this, x.operand_);
         }
 
