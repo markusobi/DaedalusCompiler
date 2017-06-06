@@ -16,7 +16,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_SPIRIT_X3_DEBUG
 
-#include "visitors/DumpAstVisitor.hpp"
 #include "ast.hpp"
 #include "vm.hpp"
 #include "visitors/compiler.hpp"
@@ -24,6 +23,8 @@
 #include "error_handler.hpp"
 #include "config.hpp"
 #include <iostream>
+#include "visitors/PrettyPrinter.hpp"
+#include "visitors/DumpAstVisitor.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Main program
@@ -77,9 +78,17 @@ main() {
     using boost::spirit::x3::ascii::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
 
-    // Run Visitors
+    using namespace std::placeholders;
+    std::list<std::function<void(ast::statement_list&)>> visitors;
+    // Visitors
     ASTVisitors::DumpAstVisitor dumpAstVisitor(error_handler);
-    dumpAstVisitor.start(ast);
+    visitors.push_back(std::bind(&ASTVisitors::DumpAstVisitor::start, &dumpAstVisitor, _1));
+    ASTVisitors::PrettyPrinter prettyPrinter(error_handler, std::cout);
+    visitors.push_back(std::bind(&ASTVisitors::PrettyPrinter::start, &prettyPrinter, _1));
+
+    // Run visitors
+    for (auto& visitor : visitors)
+        visitor(ast);
 
     std::cout << "-------------------------\n";
 
