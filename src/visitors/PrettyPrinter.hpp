@@ -139,6 +139,7 @@ namespace ASTVisitors
         {
             BOOST_ASSERT(0);
         }
+
         /**
          * default case: call base function
          */

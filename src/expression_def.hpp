@@ -39,7 +39,6 @@ namespace parser {
         x3::symbols <ast::optoken> additive_op;
         x3::symbols <ast::optoken> multiplicative_op;
         x3::symbols <ast::optoken> unary_op;
-        x3::symbols<> keywords;
     }
 
     void add_keywords() {
@@ -107,24 +106,6 @@ namespace parser {
                 op_names[id] = name;
             });
         }
-
-        // reserved keywords: class|prototype|if|else|while|return|int|float|string|instance|func|void|var|const
-        // forbidden in variable names
-        keywords.add
-                ("class")
-                ("prototype")
-                ("if")
-                ("else")
-                ("while")
-                ("return")
-                ("int")
-                ("float")
-                ("string")
-                ("instance")
-                ("func")
-                ("void")
-                ("var")
-                ("const");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -218,7 +199,7 @@ namespace parser {
 
     auto const primary_expr_def =
             uint_
-            | (!keywords >> identifier)
+            | identifier
             | ('(' > expression > ')');
 
     auto const expression_def = logical_or_expr;
