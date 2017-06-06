@@ -32,66 +32,74 @@ namespace ASTVisitors
             )
         {}
 
-        result_type operator()(ast::nil) const {
+        result_type operator()(ast::nil)
+        {
             BOOST_ASSERT(0);
             return result_type();
         }
 
-        result_type operator()(unsigned int x) const {
+        result_type operator()(int& x)
+        {
             // int literal
             return result_type();
         }
 
-        result_type operator()(ast::variable const& x) const {
+        result_type operator()(ast::variable& x)
+        {
             // variable usage or declaration
             return result_type();
         }
 
-        result_type operator()(ast::operation const& x) const {
+        result_type operator()(ast::operation& x)
+        {
             // operation i.e. * 2
-            boost::apply_visitor(asDerived(), x.operand_);
-            return result_type();
+            return boost::apply_visitor(asDerived(), x.operand_);
         }
 
-        result_type operator()(ast::unary const& x) const {
+        result_type operator()(ast::unary& x)
+        {
             // unary operation
-            boost::apply_visitor(asDerived(), x.operand_);
-            return result_type();
+            return boost::apply_visitor(asDerived(), x.operand_);
         }
 
-        result_type operator()(ast::expression const& x) const {
+        result_type operator()(ast::expression& x)
+        {
             boost::apply_visitor(asDerived(), x.first);
-            for (ast::operation const &oper : x.rest) {
+            for (ast::operation& oper : x.rest) {
                 asDerived()(oper);
             }
             return result_type();
         }
 
-        result_type operator()(ast::assignment const& x) const {
+        result_type operator()(ast::assignment& x)
+        {
             asDerived()(x.rhs);
             asDerived()(x.lhs);
             return result_type();
         }
 
-        result_type operator()(ast::variable_declaration const& x) const {
+        result_type operator()(ast::variable_declaration& x)
+        {
             asDerived()(x.assign.lhs);
             asDerived()(x.assign.rhs);
             return result_type();
         }
 
-        result_type operator()(ast::statement const& x) const {
-            boost::apply_visitor(asDerived(), x);
-            return result_type();
+        result_type operator()(ast::statement& x)
+        {
+            return boost::apply_visitor(asDerived(), x);
         }
 
-        result_type operator()(ast::statement_list const& x) const {
-            for (auto const &statement : x) {
+        result_type operator()(ast::statement_list& x)
+        {
+            for (auto& statement : x) {
                 asDerived()(statement);
             }
             return result_type();
         }
 
-        result_type operator()(ast::if_statement const& x) const {
+        result_type operator()(ast::if_statement& x)
+        {
             asDerived()(x.condition);
             asDerived()(x.then);
             if (x.else_)
@@ -99,15 +107,16 @@ namespace ASTVisitors
             return result_type();
         }
 
-        result_type operator()(ast::while_statement const& x) const {
+        result_type operator()(ast::while_statement& x)
+        {
             asDerived()(x.condition);
             asDerived()(x.body);
-            return void();
+            return result_type();
         }
 
-        result_type start(ast::statement_list const& x) const {
-            asDerived()(x);
-            return result_type();
+        result_type start(ast::statement_list& x)
+        {
+            return asDerived()(x);
         }
 
         error_handler_type error_handler;
@@ -117,9 +126,9 @@ namespace ASTVisitors
         using MyBase = BaseVisitor<Derived>;
 
     private:
-        inline const Derived& asDerived() const
+        inline Derived& asDerived()
         {
-            return static_cast<const Derived&>(*this);
+            return static_cast<Derived&>(*this);
         }
     };
 }

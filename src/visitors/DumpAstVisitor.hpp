@@ -13,9 +13,9 @@ namespace ASTVisitors
          * default case: call base function
          */
         template <class T>
-        result_type operator()(const T& x) const
+        result_type operator()(T& x)
         {
-            return static_cast<const MyBase&>(*this).operator()(x);
+            return static_cast<MyBase&>(*this).operator()(x);
         }
     };
 }

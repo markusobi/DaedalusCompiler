@@ -64,7 +64,7 @@ namespace code_gen
         {}
 
         result_type operator()(ast::nil) const { BOOST_ASSERT(0); return false; }
-        result_type operator()(unsigned int x) const;
+        result_type operator()(int x) const;
         result_type operator()(ast::variable const& x) const;
         result_type operator()(ast::operation const& x) const;
         result_type operator()(ast::unary const& x) const;

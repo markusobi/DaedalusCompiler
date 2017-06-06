@@ -212,7 +212,7 @@ namespace code_gen {
         std::cout << "end:" << std::endl;
     }
 
-    result_type compiler::operator()(unsigned int x) const {
+    result_type compiler::operator()(int x) const {
         program.op(op_int, x);
         return true;
     }

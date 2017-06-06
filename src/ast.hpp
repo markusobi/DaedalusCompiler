@@ -32,7 +32,7 @@ namespace ast
 
     struct operand :
             x3::variant<
-                    nil, unsigned int, variable, x3::forward_ast<unary>, x3::forward_ast<expression>
+                    nil, int, variable, x3::forward_ast<unary>, x3::forward_ast<expression>
             > {
         using base_type::base_type;
         using base_type::operator=;
