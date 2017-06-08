@@ -15,7 +15,7 @@ namespace ASTVisitors
         template <class T>
         result_type operator()(T& x)
         {
-            return static_cast<MyBase&>(*this).operator()(x);
+            return visitBase(x);
         }
     };
 }

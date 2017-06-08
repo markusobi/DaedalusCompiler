@@ -14,7 +14,7 @@
 namespace ASTVisitors
 {
     ////////////////////////////////////////////////////////////////////////////
-    //  The Base AST Visitor
+    //  The Adapted AST Visitor
     //  Curiously Recurring Template Pattern (CRTP)
     ////////////////////////////////////////////////////////////////////////////
     template <class Derived, class ResultType = void>
@@ -25,6 +25,7 @@ namespace ASTVisitors
         typedef parser::error_handler_type ErrorHandler_;
         typedef ErrorHandler_ ErrorHandler;
         typedef std::function<void(boost::spirit::x3::position_tagged, std::string const&)> error_handler_type;
+        typedef BaseVisitor<Derived> BaseType;
 
         BaseVisitor(ErrorHandler const& error_handler) :
                 error_handler([&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
@@ -32,6 +33,12 @@ namespace ASTVisitors
             )
         {}
 
+        ResultType start(ast::statement_list& x)
+        {
+            return visitDerived(x);
+        }
+
+    protected:
         ResultType operator()(ast::nil)
         {
             BOOST_ASSERT(0);
@@ -133,17 +140,6 @@ namespace ASTVisitors
             return ResultType();
         }
 
-        ResultType start(ast::statement_list& x)
-        {
-            return visitDerived(x);
-        }
-
-        error_handler_type error_handler;
-
-
-    protected:
-        using MyBase = BaseVisitor<Derived>;
-
         /**
          * @return reference to this object as derived,
          * to delegate the dispatching to the derived class (static polymorphism)
@@ -153,17 +149,26 @@ namespace ASTVisitors
             return static_cast<Derived&>(*this);
         }
 
+        /**
+         * calls the derived visitor method
+         * @param x ast node to visit
+         */
         template <typename T>
         inline ResultType visitDerived(T& x)
         {
             return static_cast<Derived*>(this)->operator()(x);
         }
 
+        /**
+         * calls the base visitor method
+         * @param x ast node to visit
+         */
         template <typename T>
         inline ResultType visitBase(T& x)
         {
-            return static_cast<BaseVisitor<Derived>*>(this)->operator()(x);
+            return static_cast<BaseType*>(this)->operator()(x);
         }
 
+        error_handler_type error_handler;
     };
 }

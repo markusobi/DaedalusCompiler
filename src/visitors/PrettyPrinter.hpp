@@ -67,9 +67,9 @@ namespace ASTVisitors
 
         result_type operator()(ast::assignment& x)
         {
-            derived()(x.lhs);
+            visitDerived(x.lhs);
             *this << " = ";
-            derived()(x.rhs);
+            visitDerived(x.rhs);
         }
 
         result_type operator()(ast::variable_declaration& x)
