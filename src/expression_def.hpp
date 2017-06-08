@@ -199,7 +199,7 @@ namespace parser {
 
     auto const primary_expr_def =
             uint_
-            | identifier
+            | identifier // FIXME: identifier is untagged
             | ('(' > expression > ')');
 
     auto const expression_def = logical_or_expr;

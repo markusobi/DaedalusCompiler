@@ -67,6 +67,12 @@ namespace ASTVisitors
             return asDerived()(static_cast<Inner&>(x));
         }
 
+        template <class T>
+        ResultType operator()(T& x)
+        {
+            static_assert(sizeof(T) == 0, "missing visitor method overload in base visitor for type T");
+        }
+
         ResultType operator()(ast::expression& x)
         {
             boost::apply_visitor(asDerived(), x.first);

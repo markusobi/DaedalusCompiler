@@ -59,7 +59,10 @@ namespace code_gen
           : program(program)
           , error_handler(
                 [&](x3::position_tagged pos, std::string const& msg)
-                { error_handler(pos, msg); }
+                {
+                    BOOST_ASSERT_MSG(pos.id_first != -1 && pos.id_last != -1, "untagged ast object");
+                    error_handler(pos, msg);
+                }
             )
         {}
 

@@ -96,7 +96,7 @@ namespace ASTVisitors
 
         result_type operator()(ast::if_statement& x)
         {
-            writeIndented("if (");
+            *this << "if (";
             asDerived()(x.condition);
             *this << ")\n";
             writeIndentedLine("{");
@@ -118,7 +118,7 @@ namespace ASTVisitors
 
         result_type operator()(ast::while_statement& x)
         {
-            writeIndented("while (");
+            *this << "while (";
             asDerived()(x.condition);
             *this << ")\n";
 
@@ -133,11 +133,6 @@ namespace ASTVisitors
         result_type start(ast::statement_list& x)
         {
             return asDerived()(x);
-        }
-
-        result_type operator()(ast::nil)
-        {
-            BOOST_ASSERT(0);
         }
 
         /**

@@ -12,8 +12,8 @@
 namespace parser {
     using x3::raw;
     using x3::lexeme;
-    using x3::alpha;
     using x3::alnum;
+    using x3::digit;
 
     namespace {
         x3::symbols<> keywords;
@@ -49,14 +49,13 @@ namespace parser {
     typedef x3::rule <identifier_class, std::string> identifier_type;
     identifier_type const identifier = "identifier";
 
-    //auto const identifier_def = raw[lexeme[(alpha | '_') >> *(alnum | '_')]];
-
     // exclude keywords, but not names starting with keywords
     // lexeme: disable skipper (whitespace/comments inside variable names)
+    const auto ident_char = alnum | '_';
     auto const identifier_def = raw[lexeme[
-            !(getKeywords() >> !(alnum | '_'))
+            !(getKeywords() >> !ident_char)
             >>
-            (alpha | '_') >> *(alnum | '_')
+            (ident_char - digit) >> *ident_char
     ]];
 
     BOOST_SPIRIT_DEFINE(identifier);
