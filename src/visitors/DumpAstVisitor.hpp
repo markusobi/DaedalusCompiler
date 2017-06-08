@@ -1,10 +1,10 @@
 #pragma once
 
-#include "visitors/BaseVisitor.hpp"
+#include "visitors/VisitorAdapter.hpp"
 
 namespace ASTVisitors
 {
-    class DumpAstVisitor : public BaseVisitor<DumpAstVisitor>
+    class DumpAstVisitor : public VisitorAdapter<DumpAstVisitor>
     {
     public:
         DumpAstVisitor(const ErrorHandler& errorHandler);

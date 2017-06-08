@@ -4,7 +4,7 @@
 namespace ASTVisitors
 {
     PrettyPrinter::PrettyPrinter(const ErrorHandler& errorHandler, const std::string& filename)
-            : BaseVisitor(errorHandler),
+            : VisitorAdapter(errorHandler),
               m_File(filename),
               m_Out(m_File)
     {
@@ -12,7 +12,7 @@ namespace ASTVisitors
     }
 
     PrettyPrinter::PrettyPrinter(const ErrorHandler& errorHandler, std::ostream& out)
-            : BaseVisitor(errorHandler),
+            : VisitorAdapter(errorHandler),
               m_Out(out)
     {
         init();

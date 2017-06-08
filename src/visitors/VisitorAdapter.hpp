@@ -18,16 +18,16 @@ namespace ASTVisitors
     //  Curiously Recurring Template Pattern (CRTP)
     ////////////////////////////////////////////////////////////////////////////
     template <class Derived, class ResultType = void>
-    class BaseVisitor : public boost::static_visitor<ResultType>
+    class VisitorAdapter : public boost::static_visitor<ResultType>
     {
     public:
         // for the sake of readability of template error messages, ErrorHandler_ is not a template parameter anymore
         typedef parser::error_handler_type ErrorHandler_;
         typedef ErrorHandler_ ErrorHandler;
         typedef std::function<void(boost::spirit::x3::position_tagged, std::string const&)> error_handler_type;
-        typedef BaseVisitor<Derived> BaseType;
+        typedef VisitorAdapter<Derived> BaseType;
 
-        BaseVisitor(ErrorHandler const& error_handler) :
+        VisitorAdapter(ErrorHandler const& error_handler) :
                 error_handler([&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
                 { error_handler(pos, msg); }
             )

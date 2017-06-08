@@ -1,13 +1,13 @@
 #pragma once
 
-#include "BaseVisitor.hpp"
+#include "VisitorAdapter.hpp"
 #include <ostream>
 #include <fstream>
 #include <expression.hpp>
 
 namespace ASTVisitors
 {
-    class PrettyPrinter : public BaseVisitor<PrettyPrinter>
+    class PrettyPrinter : public VisitorAdapter<PrettyPrinter>
     {
     public:
         PrettyPrinter(const ErrorHandler& errorHandler, const std::string& filename);
