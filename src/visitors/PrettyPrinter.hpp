@@ -31,6 +31,11 @@ namespace ASTVisitors
          * Visitor methods
          */
 
+        result_type operator()(ast::nil x)
+        {
+            *this << "<nil>";
+        }
+
         result_type operator()(int& x)
         {
             *this << x;
@@ -44,95 +49,76 @@ namespace ASTVisitors
         result_type operator()(ast::operation& x)
         {
             *this << " " << getOpTokenLookup().at(x.operator_) << " ";
-            return boost::apply_visitor(*this, x.operand_);
+            return visitBase(x);
         }
 
         result_type operator()(ast::unary& x)
         {
             *this << getOpTokenLookup().at(x.operator_);
-            return boost::apply_visitor(*this, x.operand_);
+            return visitBase(x.operand_);
         }
 
         result_type operator()(ast::expression& x)
         {
-            if (!x.rest.empty() || true)
-                *this << "(";
-
-            boost::apply_visitor(*this, x.first);
-            for (ast::operation& oper : x.rest) {
-                (*this)(oper);
-            }
-
-            if (!x.rest.empty() || true)
-                *this << ")";
+            *this << "(";
+            visitBase(x);
+            *this << ")";
         }
 
         result_type operator()(ast::assignment& x)
         {
-            asDerived()(x.lhs);
+            derived()(x.lhs);
             *this << " = ";
-            asDerived()(x.rhs);
+            derived()(x.rhs);
         }
 
         result_type operator()(ast::variable_declaration& x)
         {
             *this << "var ";
-            asDerived()(x.assign);
+            visitBase(x);
         }
 
         result_type operator()(ast::statement& x)
         {
             writeIndented("");
-            boost::apply_visitor(asDerived(), x);
+            visitBase(x);
             *this << ";\n";
         }
 
         result_type operator()(ast::statement_list& x)
         {
-            for (auto& statement : x) {
-                asDerived()(statement);
+            writeIndentedLine("{");
+            {
+                Indentation ident(*this);
+                visitBase(x);
             }
+            writeIndentedLine("}");
         }
 
         result_type operator()(ast::if_statement& x)
         {
             *this << "if (";
-            asDerived()(x.condition);
+            visitDerived(x.condition);
             *this << ")\n";
-            writeIndentedLine("{");
-            {
-                Indentation ident(*this);
-                asDerived()(x.then);
-            }
-            writeIndentedLine("}");
+            visitDerived(x.then);
             if (x.else_)
             {
-                writeIndentedLine("{");
-                {
-                    Indentation ident(*this);
-                    asDerived()(*x.else_);
-                }
-                writeIndentedLine("}");
+                writeIndentedLine("else");
+                visitDerived(*x.else_);
             }
         }
 
         result_type operator()(ast::while_statement& x)
         {
             *this << "while (";
-            asDerived()(x.condition);
+            visitDerived(x.condition);
             *this << ")\n";
-
-            writeIndentedLine("{");
-            {
-                Indentation ident(*this);
-                asDerived()(x.body);
-            }
-            writeIndentedLine("}");
+            visitDerived(x.body);
         }
 
         result_type start(ast::statement_list& x)
         {
-            return asDerived()(x);
+            return visitDerived(x);
         }
 
         /**
@@ -141,7 +127,7 @@ namespace ASTVisitors
         template <class T>
         result_type operator()(T& x)
         {
-            return static_cast<MyBase&>(*this).operator()(x);
+            return visitBase(x);
         }
 
         /**

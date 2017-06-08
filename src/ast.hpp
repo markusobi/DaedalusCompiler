@@ -105,18 +105,20 @@ namespace ast
         using base_type::operator=;
     };
 
+    typedef statement_list block;
+
     struct statement_list : std::list<statement> {
     };
 
     struct if_statement {
-        expression condition;
-        statement then;
-        boost::optional<statement> else_;
+        operand condition;
+        block then;
+        boost::optional<block> else_;
     };
 
     struct while_statement {
-        expression condition;
-        statement body;
+        operand condition;
+        block body;
     };
 
     // print functions for debugging

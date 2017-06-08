@@ -227,8 +227,12 @@ namespace code_gen {
         return true;
     }
 
+    result_type compiler::operator()(ast::operand const &x) const {
+        return boost::apply_visitor(*this, x);
+    }
+
     result_type compiler::operator()(ast::operation const &x) const {
-        if (!boost::apply_visitor(*this, x.operand_))
+        if (!(*this)(x.operand_))
             return false;
         switch (x.operator_) {
             case ast::op_plus:
@@ -297,7 +301,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::unary const &x) const {
-        if (!boost::apply_visitor(*this, x.operand_))
+        if (!(*this)(x.operand_))
             return false;
         switch (x.operator_) {
             case ast::op_positive:
@@ -321,7 +325,7 @@ namespace code_gen {
 
     result_type compiler::expression_visit_left_to_right(ast::expression const &x) const
     {
-        if (!boost::apply_visitor(*this, x.first))
+        if (!(*this)(x.first))
             return false;
         for (ast::operation const &oper : x.rest) {
             if (!(*this)(oper))
@@ -336,7 +340,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::assignment const &x) const {
-        if (!boost::apply_visitor(*this, x.rhs))
+        if (!(*this)(x.rhs))
             return false;
         int const *p = program.find_var(x.lhs.name);
         if (p == 0) {
@@ -353,7 +357,7 @@ namespace code_gen {
             error_handler(x.assign.lhs, "Duplicate variable: " + x.assign.lhs.name);
             return false;
         }
-        bool r = boost::apply_visitor(*this, x.assign.rhs);
+        bool r = (*this)(x.assign.rhs);
         if (r) // don't add the variable if the RHS fails
         {
             program.add_var(x.assign.lhs.name);
