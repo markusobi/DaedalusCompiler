@@ -336,7 +336,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::assignment const &x) const {
-        if (!(*this)(x.rhs))
+        if (!boost::apply_visitor(*this, x.rhs))
             return false;
         int const *p = program.find_var(x.lhs.name);
         if (p == 0) {
@@ -353,7 +353,7 @@ namespace code_gen {
             error_handler(x.assign.lhs, "Duplicate variable: " + x.assign.lhs.name);
             return false;
         }
-        bool r = (*this)(x.assign.rhs);
+        bool r = boost::apply_visitor(*this, x.assign.rhs);
         if (r) // don't add the variable if the RHS fails
         {
             program.add_var(x.assign.lhs.name);

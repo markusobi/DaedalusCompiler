@@ -86,7 +86,7 @@ namespace ast
 
     struct assignment : x3::position_tagged {
         variable lhs;
-        expression rhs;
+        operand rhs;
     };
 
     struct variable_declaration {
