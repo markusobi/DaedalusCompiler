@@ -12,8 +12,9 @@
 namespace parser {
     using x3::raw;
     using x3::lexeme;
-    using x3::alnum;
-    using x3::digit;
+    namespace encoding = x3::iso8859_1;
+    using encoding::alnum;
+    using encoding::digit;
 
     namespace {
         x3::symbols<> keywords;
@@ -33,7 +34,7 @@ namespace parser {
                     ("else")
                     ("while")
                     ("return")
-                    ("int")
+                    ("int") // TODO don't forbid primitive types in variable names in the parser, since class names need to be checked anyway
                     ("float")
                     ("string")
                     ("instance")

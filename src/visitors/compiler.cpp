@@ -414,7 +414,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::start(ast::statement_list const &x) const {
+    result_type compiler::start(ast::program const &x) const {
         program.clear();
         // op_stk_adj 0 for now. we'll know how many variables we'll have later
         program.op(op_stk_adj, 0);

@@ -116,11 +116,6 @@ namespace ASTVisitors
             visitDerived(x.body);
         }
 
-        result_type start(ast::statement_list& x)
-        {
-            return visitDerived(x);
-        }
-
         /**
          * default case: call base function
          */

@@ -19,7 +19,7 @@
 namespace parser {
     using x3::raw;
     using x3::lexeme;
-    using namespace x3::ascii;
+    using namespace encoding;
 
     struct statement_list_class;
     struct variable_declaration_class;

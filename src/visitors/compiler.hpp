@@ -81,7 +81,7 @@ namespace code_gen
         result_type operator()(ast::if_statement const& x) const;
         result_type operator()(ast::while_statement const& x) const;
 
-        bool start(ast::statement_list const& x) const;
+        bool start(ast::program const& x) const;
 
         code_gen::program& program;
         error_handler_type error_handler;

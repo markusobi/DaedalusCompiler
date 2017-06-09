@@ -23,6 +23,7 @@
 #include "error_handler.hpp"
 #include "config.hpp"
 #include <iostream>
+#include "common.hpp"
 #include "visitors/PrettyPrinter.hpp"
 #include "visitors/DumpAstVisitor.hpp"
 
@@ -57,7 +58,7 @@ main() {
 
     vmachine vm;                                    // Our virtual machine
     code_gen::program program;                      // Our VM program
-    ast::statement_list ast;                        // Our AST
+    ast::program ast;                        // Our AST
 
     using boost::spirit::x3::with;
     using parser::error_handler_type;
@@ -75,11 +76,11 @@ main() {
                     getStatementParser()
             ];
 
-    using boost::spirit::x3::ascii::space;
+    using parser::encoding::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
 
     using namespace std::placeholders;
-    std::list<std::function<void(ast::statement_list&)>> visitors;
+    std::list<std::function<void(ast::program&)>> visitors;
     // Visitors
     ASTVisitors::DumpAstVisitor dumpAstVisitor(error_handler);
     visitors.push_back(std::bind(&ASTVisitors::DumpAstVisitor::start, &dumpAstVisitor, _1));
