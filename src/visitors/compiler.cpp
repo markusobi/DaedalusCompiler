@@ -212,7 +212,7 @@ namespace code_gen {
         std::cout << "end:" << std::endl;
     }
 
-    result_type compiler::operator()(int x) {
+    result_type compiler::operator()(int& x) {
         program.op(op_int, x);
         return true;
     }
@@ -227,12 +227,8 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::operand& x) {
-        return boost::apply_visitor(*this, x);
-    }
-
     result_type compiler::operator()(ast::operation& x) {
-        if (!(*this)(x.operand_))
+        if (!visitDerived(x.operand_))
             return false;
         switch (x.operator_) {
             case ast::op_plus:
@@ -301,7 +297,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::unary& x) {
-        if (!(*this)(x.operand_))
+        if (!visitDerived(x.operand_))
             return false;
         switch (x.operator_) {
             case ast::op_positive:
@@ -325,17 +321,17 @@ namespace code_gen {
 
     result_type compiler::operator()(ast::expression& x)
     {
-        if (!(*this)(x.first))
+        if (!visitDerived(x.first))
             return false;
         for (ast::operation& oper : x.rest) {
-            if (!(*this)(oper))
+            if (!visitDerived(oper))
                 return false;
         }
         return true;
     }
 
     result_type compiler::operator()(ast::assignment& x) {
-        if (!(*this)(x.rhs))
+        if (!visitDerived(x.rhs))
             return false;
         int const *p = program.find_var(x.lhs.name);
         if (p == 0) {
@@ -352,7 +348,7 @@ namespace code_gen {
             error_handler(x.assign.lhs, "Duplicate variable: " + x.assign.lhs.name);
             return false;
         }
-        bool r = (*this)(x.assign.rhs);
+        bool r = visitDerived(x.assign.rhs);
         if (r) // don't add the variable if the RHS fails
         {
             program.add_var(x.assign.lhs.name);
@@ -361,24 +357,20 @@ namespace code_gen {
         return r;
     }
 
-    result_type compiler::operator()(ast::statement& x) {
-        return boost::apply_visitor(*this, x);
-    }
-
     result_type compiler::operator()(ast::statement_list& x) {
         for (auto& s : x) {
-            if (!(*this)(s))
+            if (!visitDerived(s))
                 return false;
         }
         return true;
     }
 
     result_type compiler::operator()(ast::if_statement& x) {
-        if (!(*this)(x.condition))
+        if (!visitDerived(x.condition))
             return false;
         program.op(op_jump_if, 0);                      // we shall fill this (0) in later
         std::size_t skip = program.size() - 1;            // mark its position
-        if (!(*this)(x.then))
+        if (!visitDerived(x.then))
             return false;
         program[skip] = int(program.size() - skip);       // now we know where to jump to (after the if branch)
 
@@ -387,7 +379,7 @@ namespace code_gen {
             program[skip] += 2;                         // adjust for the "else" jump
             program.op(op_jump, 0);                     // we shall fill this (0) in later
             std::size_t exit = program.size() - 1;        // mark its position
-            if (!(*this)(*x.else_))
+            if (!visitDerived(*x.else_))
                 return false;
             program[exit] = int(program.size() - exit);   // now we know where to jump to (after the else branch)
         }
@@ -397,11 +389,11 @@ namespace code_gen {
 
     result_type compiler::operator()(ast::while_statement& x) {
         std::size_t loop = program.size();              // mark our position
-        if (!(*this)(x.condition))
+        if (!visitDerived(x.condition))
             return false;
         program.op(op_jump_if, 0);                      // we shall fill this (0) in later
         std::size_t exit = program.size() - 1;            // mark its position
-        if (!(*this)(x.body))
+        if (!visitDerived(x.body))
             return false;
         program.op(op_jump,
                    int(loop - 1) - int(program.size()));         // loop back

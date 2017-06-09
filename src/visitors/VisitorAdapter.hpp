@@ -26,7 +26,7 @@ namespace ASTVisitors
         typedef parser::error_handler_type ErrorHandler_;
         typedef ErrorHandler_ ErrorHandler;
         typedef std::function<void(boost::spirit::x3::position_tagged, std::string const&)> error_handler_type;
-        typedef VisitorAdapter<Derived> BaseType;
+        typedef VisitorAdapter<Derived, ResultType> BaseType;
 
         VisitorAdapter(ErrorHandler const& error_handler, const std::string& name="UnnamedVisitor") :
                 BaseVisitor(name),

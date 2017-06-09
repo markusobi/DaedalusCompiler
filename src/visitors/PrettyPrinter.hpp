@@ -55,7 +55,7 @@ namespace ASTVisitors
         result_type operator()(ast::unary& x)
         {
             *this << getOpTokenLookup().at(x.operator_);
-            return visitBase(x.operand_);
+            return visitBase(x);
         }
 
         result_type operator()(ast::expression& x)

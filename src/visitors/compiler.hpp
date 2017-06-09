@@ -54,18 +54,25 @@ namespace code_gen
         {}
 
         result_type operator()(ast::nil) { BOOST_ASSERT(0); return false; }
-        result_type operator()(int x);
+        result_type operator()(int& x);
         result_type operator()(ast::variable& x);
-        result_type operator()(ast::operand& x);
         result_type operator()(ast::operation& x);
         result_type operator()(ast::unary& x);
         result_type operator()(ast::expression& x);
         result_type operator()(ast::assignment& x);
         result_type operator()(ast::variable_declaration& x);
         result_type operator()(ast::statement_list& x);
-        result_type operator()(ast::statement& x);
         result_type operator()(ast::if_statement& x);
         result_type operator()(ast::while_statement& x);
+
+        /**
+         * default case: call base function
+         */
+        template <class T>
+        result_type operator()(T& x)
+        {
+            return visitBase(x);
+        }
 
         bool compile(ast::program& x);
 
