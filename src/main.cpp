@@ -35,6 +35,7 @@ main() {
     std::cout << "/////////////////////////////////////////////////////////\n\n";
     std::cout << "Statement parser...\n\n";
     std::cout << "/////////////////////////////////////////////////////////\n\n";
+    /*
     std::cout << "Type some statements... ";
     std::cout << "An empty line ends input, compiles, runs and prints results\n\n";
     std::cout << "Example:\n\n";
@@ -42,6 +43,7 @@ main() {
     std::cout << "    var b = 456;\n";
     std::cout << "    var c = a + b * 2;\n\n";
     std::cout << "-------------------------\n";
+     */
 
     std::string str;
     std::string source;
@@ -78,6 +80,11 @@ main() {
 
     using parser::encoding::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
+    if (!success || iter != end)
+    {
+        std::cerr << "Parsing failed. Compilation aborted" << std::endl;
+        return 1;
+    }
 
     // Visitors
     using namespace ASTVisitors;
@@ -93,25 +100,22 @@ main() {
 
     std::cout << "-------------------------\n";
 
-    if (success && iter == end) {
-        if (compile.start(ast)) {
-            std::cout << "Success\n";
-            std::cout << "-------------------------\n";
-            vm.execute(program());
+    if (compile.start(ast)) {
+        std::cout << "Success\n";
+        std::cout << "-------------------------\n";
+        vm.execute(program());
 
-            std::cout << "-------------------------\n";
-            std::cout << "Assembler----------------\n\n";
-            program.print_assembler();
+        std::cout << "-------------------------\n";
+        std::cout << "Assembler----------------\n\n";
+        program.print_assembler();
 
-            std::cout << "-------------------------\n";
-            std::cout << "Results------------------\n\n";
-            program.print_variables(vm.get_stack());
-        } else {
-            std::cout << "Compile failure\n";
-        }
+        std::cout << "-------------------------\n";
+        std::cout << "Results------------------\n\n";
+        program.print_variables(vm.get_stack());
     } else {
-        std::cout << "Parse failure\n";
+        std::cout << "Compile failure\n";
     }
+
 
     std::cout << "-------------------------\n\n";
     return 0;

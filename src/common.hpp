@@ -14,6 +14,7 @@ namespace parser {
     namespace encoding = x3::iso8859_1;
     using encoding::alnum;
     using encoding::digit;
+    using x3::no_case;
 
     namespace {
         x3::symbols<> keywords;
@@ -53,8 +54,15 @@ namespace parser {
     // lexeme: disable skipper (whitespace/comments inside variable names)
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;
+
+    template <class Parser>
+    auto nocase_wholeword(Parser& parser)
+    {
+        return lexeme[no_case[parser] >> word_end];
+    }
+
     auto const identifier_def = raw[lexeme[
-            !(getKeywords() >> word_end)
+            !nocase_wholeword(getKeywords())
             >>
             (ident_char - digit) >> *ident_char
     ]];

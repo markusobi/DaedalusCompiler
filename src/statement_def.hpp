@@ -49,7 +49,7 @@ namespace parser {
             *statement;
 
     auto const variable_declaration_def =
-            lexeme["var" >> word_end] // look ahead for word end
+            nocase_wholeword("var")
             > assignment;
 
     auto const assignment_def =
