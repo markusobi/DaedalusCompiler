@@ -121,6 +121,8 @@ namespace ast
         block body;
     };
 
+    typedef statement_list program;
+
     // print functions for debugging
     inline std::ostream &operator<<(std::ostream &out, nil) {
         out << "nil";

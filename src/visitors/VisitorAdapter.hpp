@@ -33,7 +33,7 @@ namespace ASTVisitors
             )
         {}
 
-        ResultType start(ast::statement_list& x)
+        ResultType start(ast::program& x)
         {
             return visitDerived(x);
         }
