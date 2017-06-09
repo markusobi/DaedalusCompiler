@@ -11,7 +11,7 @@ namespace ASTVisitors
         : name(name)
         {}
 
-        virtual void start(ast::program& ast);
+        virtual void start(ast::program& ast) {}
 
         virtual ~BaseVisitor() {}
 

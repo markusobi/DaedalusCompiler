@@ -10,6 +10,7 @@
 #include "ast.hpp"
 #include "error_handler.hpp"
 #include "config.hpp"
+#include "BaseVisitor.hpp"
 
 namespace ASTVisitors
 {
@@ -18,7 +19,7 @@ namespace ASTVisitors
     //  Curiously Recurring Template Pattern (CRTP)
     ////////////////////////////////////////////////////////////////////////////
     template <class Derived, class ResultType = void>
-    class VisitorAdapter : public boost::static_visitor<ResultType>
+    class VisitorAdapter :  public BaseVisitor, public boost::static_visitor<ResultType>
     {
     public:
         // for the sake of readability of template error messages, ErrorHandler_ is not a template parameter anymore
@@ -27,13 +28,14 @@ namespace ASTVisitors
         typedef std::function<void(boost::spirit::x3::position_tagged, std::string const&)> error_handler_type;
         typedef VisitorAdapter<Derived> BaseType;
 
-        VisitorAdapter(ErrorHandler const& error_handler) :
+        VisitorAdapter(ErrorHandler const& error_handler, const std::string& name="UnnamedVisitor") :
+                BaseVisitor(name),
                 error_handler([&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
                 { error_handler(pos, msg); }
             )
         {}
 
-        ResultType start(ast::program& x)
+        void start(ast::program& x) override
         {
             return visitDerived(x);
         }

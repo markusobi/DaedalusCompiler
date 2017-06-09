@@ -79,17 +79,17 @@ main() {
     using parser::encoding::space;
     bool success = phrase_parse(iter, end, parser, space, ast);
 
-    using namespace std::placeholders;
-    std::list<std::function<void(ast::program&)>> visitors;
     // Visitors
-    ASTVisitors::DumpAstVisitor dumpAstVisitor(error_handler);
-    visitors.push_back(std::bind(&ASTVisitors::DumpAstVisitor::start, &dumpAstVisitor, _1));
-    ASTVisitors::PrettyPrinter prettyPrinter(error_handler, std::cout);
-    visitors.push_back(std::bind(&ASTVisitors::PrettyPrinter::start, &prettyPrinter, _1));
+    using namespace ASTVisitors;
+    std::list<std::unique_ptr<BaseVisitor>> visitors;
+    visitors.push_back(std::make_unique<DumpAstVisitor>(error_handler));
+    visitors.push_back(std::make_unique<PrettyPrinter>(error_handler, std::cout));
 
     // Run visitors
     for (auto& visitor : visitors)
-        visitor(ast);
+    {
+        visitor->start(ast);
+    }
 
     std::cout << "-------------------------\n";
 
