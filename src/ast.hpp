@@ -99,7 +99,11 @@ namespace ast
 
     struct statement :
             x3::variant<
-                    variable_declaration, assignment, boost::recursive_wrapper<if_statement>, boost::recursive_wrapper<while_statement>, boost::recursive_wrapper<statement_list>
+                    variable_declaration,
+                    assignment,
+                    boost::recursive_wrapper<if_statement>,
+                    boost::recursive_wrapper<while_statement>,
+                    boost::recursive_wrapper<statement_list>
             > {
         using base_type::base_type;
         using base_type::operator=;

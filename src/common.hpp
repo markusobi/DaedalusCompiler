@@ -50,8 +50,6 @@ namespace parser {
     typedef x3::rule <identifier_class, std::string> identifier_type;
     identifier_type const identifier = "identifier";
 
-    // exclude keywords, but not names starting with keywords
-    // lexeme: disable skipper (whitespace/comments inside variable names)
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;
 
@@ -61,6 +59,8 @@ namespace parser {
         return lexeme[no_case[parser] >> word_end];
     }
 
+    // exclude keywords, but not names starting with keywords
+    // lexeme: disable skipper (whitespace/comments inside variable names)
     auto const identifier_def = raw[lexeme[
             !nocase_wholeword(getKeywords())
             >>

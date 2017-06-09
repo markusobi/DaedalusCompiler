@@ -11,9 +11,8 @@
 #include "ast.hpp"
 
 namespace parser {
-    struct statement_class;
-    typedef boost::spirit::x3::rule<statement_class, ast::program> program_type;
-    typedef program_type::id program_id;
+    struct program_class;
+    typedef boost::spirit::x3::rule<program_class, ast::program> program_type;
 
     BOOST_SPIRIT_DECLARE(program_type);
 }
