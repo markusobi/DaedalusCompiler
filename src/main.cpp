@@ -73,7 +73,7 @@ main() {
             // it later on in our on_error and on_success handlers
             with<parser::error_handler_tag>(std::ref(error_handler))
             [
-                    getStatementParser()
+                    getProgramParser()
             ];
 
     using parser::encoding::space;

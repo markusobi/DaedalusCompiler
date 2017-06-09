@@ -52,8 +52,9 @@ namespace parser {
     // exclude keywords, but not names starting with keywords
     // lexeme: disable skipper (whitespace/comments inside variable names)
     const auto ident_char = alnum | '_';
+    const auto word_end = !ident_char;
     auto const identifier_def = raw[lexeme[
-            !(getKeywords() >> !ident_char)
+            !(getKeywords() >> word_end)
             >>
             (ident_char - digit) >> *ident_char
     ]];

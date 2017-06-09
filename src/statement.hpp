@@ -12,13 +12,13 @@
 
 namespace parser {
     struct statement_class;
-    typedef boost::spirit::x3::rule<statement_class, ast::statement_list> statement_type;
-    typedef statement_type::id statement_id;
+    typedef boost::spirit::x3::rule<statement_class, ast::program> program_type;
+    typedef program_type::id program_id;
 
-    BOOST_SPIRIT_DECLARE(statement_type);
+    BOOST_SPIRIT_DECLARE(program_type);
 }
 
-parser::statement_type const &getStatementParser();
+parser::program_type const &getProgramParser();
 
 
 #endif

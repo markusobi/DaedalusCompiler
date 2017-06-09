@@ -20,16 +20,19 @@ namespace parser {
     using x3::raw;
     using x3::lexeme;
 
+    struct statement_class;
     struct statement_list_class;
     struct variable_declaration_class;
     struct assignment_class;
     struct variable_class;
 
+    typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <statement_list_class, ast::statement_list> statement_list_type;
     typedef x3::rule <variable_declaration_class, ast::variable_declaration> variable_declaration_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
     typedef x3::rule <variable_class, ast::variable> variable_type;
 
+    program_type const program("program");
     statement_type const statement("statement");
     statement_list_type const statement_list("statement_list");
     variable_declaration_type const variable_declaration("variable_declaration");
@@ -39,11 +42,14 @@ namespace parser {
     // Import the expression rule
     namespace { auto const &expression = getExpressionParser(); }
 
+    auto const statement_def =
+            variable_declaration | assignment;
+
     auto const statement_list_def =
-            +(variable_declaration | assignment);
+            *statement;
 
     auto const variable_declaration_def =
-            lexeme["var" >> !(alnum | '_')] // look ahead for word end
+            lexeme["var" >> word_end] // look ahead for word end
             > assignment;
 
     auto const assignment_def =
@@ -53,10 +59,10 @@ namespace parser {
             > ';';
 
     auto const variable_def = identifier;
-    auto const statement_def = statement_list;
+    auto const program_def = statement_list;
 
     BOOST_SPIRIT_DEFINE(
-            statement, statement_list, variable_declaration, assignment, variable
+            program, statement, statement_list, variable_declaration, assignment, variable
     );
 
     struct statement_class : error_handler_base, x3::annotate_on_success {
@@ -67,8 +73,8 @@ namespace parser {
     };
 }
 
-parser::statement_type const &getStatementParser() {
-    return parser::statement;
+parser::program_type const &getProgramParser() {
+    return parser::program;
 }
 
 #endif
