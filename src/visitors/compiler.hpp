@@ -4,9 +4,9 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CALC9_COMPILER_HPP)
-#define BOOST_SPIRIT_X3_CALC9_COMPILER_HPP
+#pragma once
 
+#include "VisitorAdapter.hpp"
 #include "ast.hpp"
 #include "error_handler.hpp"
 #include <vector>
@@ -45,25 +45,12 @@ namespace code_gen
     ////////////////////////////////////////////////////////////////////////////
     //  The Compiler
     ////////////////////////////////////////////////////////////////////////////
-    struct compiler
+    struct compiler : public ASTVisitors::VisitorAdapter<compiler, bool>
     {
-        typedef bool result_type;
-        typedef std::function<
-            void(boost::spirit::x3::position_tagged, std::string const&)>
-        error_handler_type;
-
         template <typename ErrorHandler>
-        compiler(
-            code_gen::program& program
-          , ErrorHandler const& error_handler)
-          : program(program)
-          , error_handler(
-                [&](x3::position_tagged pos, std::string const& msg)
-                {
-                    BOOST_ASSERT_MSG(pos.id_first != -1 && pos.id_last != -1, "untagged ast object");
-                    error_handler(pos, msg);
-                }
-            )
+        compiler(code_gen::program& program, ErrorHandler const& error_handler)
+                : VisitorAdapter(error_handler)
+                , program(program)
         {}
 
         result_type operator()(ast::nil) const { BOOST_ASSERT(0); return false; }
@@ -73,7 +60,6 @@ namespace code_gen
         result_type operator()(ast::operation const& x) const;
         result_type operator()(ast::unary const& x) const;
         result_type operator()(ast::expression const& x) const;
-        result_type expression_visit_left_to_right(ast::expression const& x) const;
         result_type operator()(ast::assignment const& x) const;
         result_type operator()(ast::variable_declaration const& x) const;
         result_type operator()(ast::statement_list const& x) const;
@@ -81,11 +67,8 @@ namespace code_gen
         result_type operator()(ast::if_statement const& x) const;
         result_type operator()(ast::while_statement const& x) const;
 
-        bool start(ast::program const& x) const;
+        bool compile(ast::program const& x) const;
 
         code_gen::program& program;
-        error_handler_type error_handler;
     };
 }
-
-#endif

@@ -61,7 +61,7 @@ namespace parser {
     auto const block_def =
             '{'
             > *statement
-//            > *lit(';') > statement % *lit(';') > *lit(';') // skip ; variant
+//            > *lit(';') > statement % *lit(';') > *lit(';') // skip ; version
             > '}'
     ;
 

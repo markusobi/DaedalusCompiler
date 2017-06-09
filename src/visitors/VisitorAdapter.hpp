@@ -30,14 +30,18 @@ namespace ASTVisitors
 
         VisitorAdapter(ErrorHandler const& error_handler, const std::string& name="UnnamedVisitor") :
                 BaseVisitor(name),
-                error_handler([&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
-                { error_handler(pos, msg); }
+                error_handler(
+                        [&error_handler](boost::spirit::x3::position_tagged pos, std::string const& msg)
+                        {
+                            BOOST_ASSERT_MSG(pos.id_first != -1 && pos.id_last != -1, "untagged ast object");
+                            error_handler(pos, msg);
+                        }
             )
         {}
 
         void start(ast::program& x) override
         {
-            return visitDerived(x);
+            visitDerived(x);
         }
 
     protected:

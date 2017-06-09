@@ -323,7 +323,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::expression_visit_left_to_right(ast::expression const &x) const
+    result_type compiler::operator()(ast::expression const &x) const
     {
         if (!(*this)(x.first))
             return false;
@@ -332,11 +332,6 @@ namespace code_gen {
                 return false;
         }
         return true;
-    }
-
-    result_type compiler::operator()(ast::expression const &x) const
-    {
-        return expression_visit_left_to_right(x);
     }
 
     result_type compiler::operator()(ast::assignment const &x) const {
@@ -414,7 +409,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::start(ast::program const &x) const {
+    result_type compiler::compile(ast::program const &x) const {
         program.clear();
         // op_stk_adj 0 for now. we'll know how many variables we'll have later
         program.op(op_stk_adj, 0);

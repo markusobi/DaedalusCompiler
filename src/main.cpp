@@ -100,7 +100,7 @@ main() {
 
     std::cout << "-------------------------\n";
 
-    if (compile.start(ast)) {
+    if (compile.compile(ast)) {
         std::cout << "Success\n";
         std::cout << "-------------------------\n";
         vm.execute(program());
