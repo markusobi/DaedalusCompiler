@@ -212,12 +212,12 @@ namespace code_gen {
         std::cout << "end:" << std::endl;
     }
 
-    result_type compiler::operator()(int x) const {
+    result_type compiler::operator()(int x) {
         program.op(op_int, x);
         return true;
     }
 
-    result_type compiler::operator()(ast::variable const &x) const {
+    result_type compiler::operator()(ast::variable& x) {
         int const *p = program.find_var(x.name);
         if (p == 0) {
             error_handler(x, "Undeclared variable: " + x.name);
@@ -227,11 +227,11 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::operand const &x) const {
+    result_type compiler::operator()(ast::operand& x) {
         return boost::apply_visitor(*this, x);
     }
 
-    result_type compiler::operator()(ast::operation const &x) const {
+    result_type compiler::operator()(ast::operation& x) {
         if (!(*this)(x.operand_))
             return false;
         switch (x.operator_) {
@@ -300,7 +300,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::unary const &x) const {
+    result_type compiler::operator()(ast::unary& x) {
         if (!(*this)(x.operand_))
             return false;
         switch (x.operator_) {
@@ -323,18 +323,18 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::expression const &x) const
+    result_type compiler::operator()(ast::expression& x)
     {
         if (!(*this)(x.first))
             return false;
-        for (ast::operation const &oper : x.rest) {
+        for (ast::operation& oper : x.rest) {
             if (!(*this)(oper))
                 return false;
         }
         return true;
     }
 
-    result_type compiler::operator()(ast::assignment const &x) const {
+    result_type compiler::operator()(ast::assignment& x) {
         if (!(*this)(x.rhs))
             return false;
         int const *p = program.find_var(x.lhs.name);
@@ -346,7 +346,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::variable_declaration const &x) const {
+    result_type compiler::operator()(ast::variable_declaration& x) {
         int const *p = program.find_var(x.assign.lhs.name);
         if (p != 0) {
             error_handler(x.assign.lhs, "Duplicate variable: " + x.assign.lhs.name);
@@ -361,19 +361,19 @@ namespace code_gen {
         return r;
     }
 
-    result_type compiler::operator()(ast::statement const &x) const {
+    result_type compiler::operator()(ast::statement& x) {
         return boost::apply_visitor(*this, x);
     }
 
-    result_type compiler::operator()(ast::statement_list const &x) const {
-        for (auto const &s : x) {
+    result_type compiler::operator()(ast::statement_list& x) {
+        for (auto& s : x) {
             if (!(*this)(s))
                 return false;
         }
         return true;
     }
 
-    result_type compiler::operator()(ast::if_statement const &x) const {
+    result_type compiler::operator()(ast::if_statement& x) {
         if (!(*this)(x.condition))
             return false;
         program.op(op_jump_if, 0);                      // we shall fill this (0) in later
@@ -395,7 +395,7 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::operator()(ast::while_statement const &x) const {
+    result_type compiler::operator()(ast::while_statement& x) {
         std::size_t loop = program.size();              // mark our position
         if (!(*this)(x.condition))
             return false;
@@ -409,12 +409,12 @@ namespace code_gen {
         return true;
     }
 
-    result_type compiler::compile(ast::program const &x) const {
+    result_type compiler::compile(ast::program& x) {
         program.clear();
         // op_stk_adj 0 for now. we'll know how many variables we'll have later
         program.op(op_stk_adj, 0);
 
-        if (!(*this)(x)) {
+        if (!visitDerived(x)) {
             program.clear();
             return false;
         }

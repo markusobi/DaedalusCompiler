@@ -53,21 +53,21 @@ namespace code_gen
                 , program(program)
         {}
 
-        result_type operator()(ast::nil) const { BOOST_ASSERT(0); return false; }
-        result_type operator()(int x) const;
-        result_type operator()(ast::variable const& x) const;
-        result_type operator()(ast::operand const& x) const;
-        result_type operator()(ast::operation const& x) const;
-        result_type operator()(ast::unary const& x) const;
-        result_type operator()(ast::expression const& x) const;
-        result_type operator()(ast::assignment const& x) const;
-        result_type operator()(ast::variable_declaration const& x) const;
-        result_type operator()(ast::statement_list const& x) const;
-        result_type operator()(ast::statement const& x) const;
-        result_type operator()(ast::if_statement const& x) const;
-        result_type operator()(ast::while_statement const& x) const;
+        result_type operator()(ast::nil) { BOOST_ASSERT(0); return false; }
+        result_type operator()(int x);
+        result_type operator()(ast::variable& x);
+        result_type operator()(ast::operand& x);
+        result_type operator()(ast::operation& x);
+        result_type operator()(ast::unary& x);
+        result_type operator()(ast::expression& x);
+        result_type operator()(ast::assignment& x);
+        result_type operator()(ast::variable_declaration& x);
+        result_type operator()(ast::statement_list& x);
+        result_type operator()(ast::statement& x);
+        result_type operator()(ast::if_statement& x);
+        result_type operator()(ast::while_statement& x);
 
-        bool compile(ast::program const& x) const;
+        bool compile(ast::program& x);
 
         code_gen::program& program;
     };
