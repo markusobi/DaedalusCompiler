@@ -16,8 +16,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_SPIRIT_X3_DEBUG
 
+#include <boost/program_options.hpp>
 #include "ast.hpp"
-#include "vm.hpp"
+#include "vm/vm.hpp"
 #include "visitors/compiler.hpp"
 #include "statement.hpp"
 #include "error_handler.hpp"
@@ -26,41 +27,56 @@
 #include "common.hpp"
 #include "visitors/PrettyPrinter.hpp"
 #include "visitors/DumpAstVisitor.hpp"
+#include "utils.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Main program
 ///////////////////////////////////////////////////////////////////////////////
-int
-main() {
-    std::cout << "/////////////////////////////////////////////////////////\n\n";
-    std::cout << "Statement parser...\n\n";
-    std::cout << "/////////////////////////////////////////////////////////\n\n";
-    /*
-    std::cout << "Type some statements... ";
-    std::cout << "An empty line ends input, compiles, runs and prints results\n\n";
-    std::cout << "Example:\n\n";
-    std::cout << "    var a = 123;\n";
-    std::cout << "    var b = 456;\n";
-    std::cout << "    var c = a + b * 2;\n\n";
-    std::cout << "-------------------------\n";
-     */
+int main(int argc, char* argv[]) {
+    namespace po = boost::program_options;
 
-    std::string str;
-    std::string source;
-    while (std::getline(std::cin, str)) {
-        if (str.empty())
-            break;
-        source += str + '\n';
+    po::options_description desc("Allowed options");
+    desc.add_options()
+            ("help", "produce help message")
+            ("input-file", po::value<std::string>(), "daedalus input file")
+            ("o", po::value<std::string>(),
+             "output file. usage:\n--o <filename>")
+            ;
+    po::positional_options_description positional;
+    positional.add("input-file", -1);
+    po::variables_map var_map;
+    po::store(po::command_line_parser(argc, argv).
+            options(desc).positional(positional).run(), var_map);
+    po::notify(var_map);
+    if (var_map.count("help")) {
+        std::cout << desc << std::endl;
+        return 0;
+    }
+
+    std::string daedalus_filename;
+    if (var_map.count("input-file"))
+        daedalus_filename = var_map["input-file"].as<std::string>();
+
+    std::string ofilename = "opcodes.txt";
+    if (var_map.count("o"))
+        ofilename = var_map["o"].as<std::string>();
+
+    std::string sourceCode;
+    if (!daedalus_filename.empty())
+        sourceCode = Utils::readAllText(daedalus_filename);
+    else
+    {
+        std::istreambuf_iterator<char> stdinIter(std::cin), inputEnd;
+        sourceCode = std::string(stdinIter, inputEnd);
     }
 
     using parser::iterator_type;
-    iterator_type iter(source.begin());
-    iterator_type end(source.end());
+    iterator_type iter(sourceCode.begin());
+    iterator_type end(sourceCode.end());
 
-
-    vmachine vm;                                    // Our virtual machine
-    code_gen::program program;                      // Our VM program
-    ast::program ast;                        // Our AST
+    vmachine vm;
+    code_gen::program program;
+    ast::program ast;
 
     using boost::spirit::x3::with;
     using parser::error_handler_type;
