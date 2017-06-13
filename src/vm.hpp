@@ -8,51 +8,56 @@
 #define BOOST_SPIRIT_X3_CALC9_VM_HPP
 
 #include <vector>
+#include <cstdint>
 
 ///////////////////////////////////////////////////////////////////////////
 //  The Virtual Machine
 ///////////////////////////////////////////////////////////////////////////
-enum byte_code
+constexpr uint32_t op_unary_flag = 1u << 31u;
+constexpr uint32_t op_binary_flag = 1u << 30u;
+
+enum byte_code : uint32_t
 {
-    op_pos,         //  positate the top stack entry
-    op_neg,         //  negate the top stack entry
-    op_add,         //  add top two stack entries
-    op_sub,         //  subtract top two stack entries
-    op_mul,         //  multiply top two stack entries
-    op_div,         //  divide top two stack entries
-    op_mod,         //  modulo of the top two stack entries
+    op_pos = 1u | op_unary_flag,         //  positate the top stack entry
+    op_neg = 2u | op_unary_flag,         //  negate the top stack entry
+    op_lognot = 3u | op_unary_flag,      //  logical negate the top stack entry
+    op_bitnot = 4u | op_unary_flag,      //  bitwise negate the top stack entry
 
-    op_lognot,      //  logical negate the top stack entry
-    op_bitnot,      //  bitwise negate the top stack entry
-    op_eq,          //  compare the top two stack entries for ==
-    op_neq,         //  compare the top two stack entries for !=
-    op_lt,          //  compare the top two stack entries for <
-    op_lte,         //  compare the top two stack entries for <=
-    op_gt,          //  compare the top two stack entries for >
-    op_gte,         //  compare the top two stack entries for >=
+    op_add = 5u | op_binary_flag,         //  add top two stack entries
+    op_sub = 6u | op_binary_flag,         //  subtract top two stack entries
+    op_mul = 7u | op_binary_flag,         //  multiply top two stack entries
+    op_div = 8u | op_binary_flag,         //  divide top two stack entries
+    op_mod = 9u | op_binary_flag,         //  modulo of the top two stack entries
 
-    op_bitwise_or,  // bitwise or operation on the top two stack entries
-    op_bitwise_xor, // bitwise xor operation on the top two stack entries
-    op_bitwise_and, // bitwise and operation on the top two stack entries
+    op_eq = 10u | op_binary_flag,          //  compare the top two stack entries for ==
+    op_neq = 11u | op_binary_flag,         //  compare the top two stack entries for !=
+    op_lt = 12u | op_binary_flag,          //  compare the top two stack entries for <
+    op_lte = 13u | op_binary_flag,         //  compare the top two stack entries for <=
+    op_gt = 14u | op_binary_flag,          //  compare the top two stack entries for >
+    op_gte = 15u | op_binary_flag,         //  compare the top two stack entries for >=
 
-    op_shift_left,  // bitwise shift left
-    op_shift_right, // bitwise shift right
+    op_bitwise_or = 16u | op_binary_flag,   // bitwise or operation on the top two stack entries
+    op_bitwise_xor = 17u | op_binary_flag,  // bitwise xor operation on the top two stack entries
+    op_bitwise_and = 18u | op_binary_flag,  // bitwise and operation on the top two stack entries
 
-    op_logical_and, //  logical and top two stack entries
-    op_logical_or,  //  logical or top two stack entries
+    op_shift_left = 19u | op_binary_flag,  // bitwise shift left
+    op_shift_right = 20u | op_binary_flag, // bitwise shift right
 
-    op_load,        //  load a variable
-    op_store,       //  store a variable
+    op_logical_and = 21u | op_binary_flag, //  logical and top two stack entries
+    op_logical_or = 22u | op_binary_flag,  //  logical or top two stack entries
 
-    op_int,         //  push constant integer into the stack
+    op_load = 23u,        //  load a variable
+    op_store = 24u,       //  store a variable
 
-    op_jump_if,     //  jump to a relative position in the code if top stack
+    op_int = 25u,         //  push constant integer into the stack
+
+    op_jump_if = 26u,     //  jump to a relative position in the code if top stack
                     //  evaluates to false
-    op_jump,        //  jump to a relative position in the code
+    op_jump = 27u,        //  jump to a relative position in the code
 
-    op_stk_adj,     // adjust the stack (for args and locals)
-    op_call,        // function call
-    op_return       // return from function
+    op_stk_adj = 28u,     // adjust the stack (for args and locals)
+    op_call = 29u,        // function call
+    op_return = 30u      // return from function
 };
 
 class vmachine
@@ -76,6 +81,9 @@ public:
     };
 
     std::vector<int> const& get_stack() const { return stack; };
+
+    static int evaluateUnary(byte_code opcode, int x);
+    static int evaluateBinary(byte_code opcode, int a, int b);
 
 private:
 

@@ -172,7 +172,7 @@ namespace ASTVisitors
         template <typename T>
         inline ResultType visitBase(T& x)
         {
-            return static_cast<BaseType*>(this)->operator()(x);
+            return (*this)(x);
         }
 
         error_handler_type error_handler;

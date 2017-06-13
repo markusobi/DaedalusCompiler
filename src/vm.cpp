@@ -43,181 +43,114 @@ int vmachine::execute(std::vector<int> const &code,
     while (pc != code.end()) {
         BOOST_ASSERT(pc < code.end() && pc >= code.begin());
         int a, b;
+        byte_code op_code = byte_code(*pc++);
+        if (op_code & op_unary_flag)
+        {
+            pushInt(evaluateUnary(op_code, popInt()));
+        }
+        else if (op_code & op_binary_flag)
+        {
+            int b = popInt();
+            int a = popInt();
+            pushInt(evaluateBinary(op_code, a, b));
+        } else
+        {
+            switch (op_code) {
+                case op_load:
+                    *stack_ptr++ = frame_ptr[*pc++];
+                    break;
 
-        switch (*pc++) {
-            case op_pos:
-                pushInt(+popInt());
-                break;
+                case op_store:
+                    --stack_ptr;
+                    frame_ptr[*pc++] = stack_ptr[0];
+                    break;
 
-            case op_neg:
-                pushInt(-popInt());
-                break;
+                case op_int:
+                    *stack_ptr++ = *pc++;
+                    break;
 
-            case op_lognot:
-                pushInt(!popInt());
-                break;
-
-            case op_bitnot:
-                pushInt(~popInt());
-                break;
-
-            case op_add:
-                b = popInt();
-                a = popInt();
-                pushInt(a + b);
-                break;
-
-            case op_sub:
-                b = popInt();
-                a = popInt();
-                pushInt(a - b);
-                break;
-
-            case op_mul:
-                b = popInt();
-                a = popInt();
-                pushInt(a * b);
-                break;
-
-            case op_div:
-                b = popInt();
-                a = popInt();
-                pushInt(a / b);
-                break;
-
-            case op_mod:
-                b = popInt();
-                a = popInt();
-                pushInt(a % b);
-                break;
-
-            case op_shift_left:
-                b = popInt();
-                a = popInt();
-                pushInt(a << b);
-                break;
-
-            case op_shift_right:
-                b = popInt();
-                a = popInt();
-                pushInt(a >> b);
-                break;
-
-            case op_eq:
-                b = popInt();
-                a = popInt();
-                pushInt(a == b);
-                break;
-
-            case op_neq:
-                b = popInt();
-                a = popInt();
-                pushInt(a != b);
-                break;
-
-            case op_lt:
-                b = popInt();
-                a = popInt();
-                pushInt(a < b);
-                break;
-
-            case op_lte:
-                b = popInt();
-                a = popInt();
-                pushInt(a <= b);
-                break;
-
-            case op_gt:
-                b = popInt();
-                a = popInt();
-                pushInt(a > b);
-                break;
-
-            case op_gte:
-                b = popInt();
-                a = popInt();
-                pushInt(a >= b);
-                break;
-
-            case op_bitwise_and:
-                b = popInt();
-                a = popInt();
-                pushInt(a & b);
-                break;
-
-            case op_bitwise_xor:
-                b = popInt();
-                a = popInt();
-                pushInt(a ^ b);
-                break;
-
-            case op_bitwise_or:
-                b = popInt();
-                a = popInt();
-                pushInt(a | b);
-                break;
-
-            case op_logical_and:
-                b = popInt();
-                a = popInt();
-                pushInt(a && b);
-                break;
-
-            case op_logical_or:
-                b = popInt();
-                a = popInt();
-                pushInt(a || b);
-                break;
-
-            case op_load:
-                *stack_ptr++ = frame_ptr[*pc++];
-                break;
-
-            case op_store:
-                --stack_ptr;
-                frame_ptr[*pc++] = stack_ptr[0];
-                break;
-
-            case op_int:
-                *stack_ptr++ = *pc++;
-                break;
-
-            case op_jump:
-                pc += *pc;
-                break;
-
-            case op_jump_if:
-                if (!stack_ptr[-1])
+                case op_jump:
                     pc += *pc;
-                else
-                    ++pc;
-                --stack_ptr;
-                break;
+                    break;
 
-            case op_stk_adj:
-                n_locals = *pc++;
-                stack_ptr = stack.begin() + n_locals;
-                break;
+                case op_jump_if:
+                    if (!stack_ptr[-1])
+                        pc += *pc;
+                    else
+                        ++pc;
+                    --stack_ptr;
+                    break;
 
-            case op_call: {
-                int nargs = *pc++;
-                int jump = *pc++;
+                case op_stk_adj:
+                    n_locals = *pc++;
+                    stack_ptr = stack.begin() + n_locals;
+                    break;
 
-                // a function call is a recursive call to execute
-                int r = execute(
-                        code, code.begin() + jump, stack_ptr - nargs
-                );
+                case op_call: {
+                    int nargs = *pc++;
+                    int jump = *pc++;
 
-                // cleanup after return from function
-                stack_ptr[-nargs] = r;      //  get return value
-                stack_ptr -= (nargs - 1);   //  the stack will now contain
-                //  the return value
+                    // a function call is a recursive call to execute
+                    int r = execute(
+                            code, code.begin() + jump, stack_ptr - nargs
+                    );
+
+                    // cleanup after return from function
+                    stack_ptr[-nargs] = r;      //  get return value
+                    stack_ptr -= (nargs - 1);   //  the stack will now contain
+                    //  the return value
+                }
+                    break;
+
+                case op_return:
+                    return stack_ptr[-1];
+
+                default:
+                    BOOST_ASSERT_MSG(false, "unknown op code");
             }
-                break;
-
-            case op_return:
-                return stack_ptr[-1];
         }
     }
     return -1;
+}
+
+int vmachine::evaluateUnary(byte_code opcode, int x)
+{
+    switch (opcode)
+    {
+        case op_pos: return +x;
+        case op_neg: return -x;
+        case op_lognot: return !x;
+        case op_bitnot: return ~x;
+        default:
+            BOOST_ASSERT_MSG(false, "unknown op code");
+            return -1;
+    }
+}
+
+int vmachine::evaluateBinary(byte_code opcode, int a, int b)
+{
+    switch (opcode)
+    {
+        case op_add: return a + b;
+        case op_sub: return a - b;
+        case op_mul: return a * b;
+        case op_div: return a / b;
+        case op_mod: return a % b;
+        case op_eq: return a == b;
+        case op_neq: return a != b;
+        case op_lt: return a < b;
+        case op_lte: return a <= b;
+        case op_gt: return a > b;
+        case op_gte: return a >= b;
+        case op_bitwise_or: return a | b;
+        case op_bitwise_xor: return a ^ b;
+        case op_bitwise_and: return a & b;
+        case op_shift_left: return a << b;
+        case op_shift_right: return a >> b;
+        case op_logical_and: return a && b;
+        case op_logical_or: return a || b;
+        default:
+            BOOST_ASSERT_MSG(false, "unknown op code");
+            return -1;
+    }
 }
