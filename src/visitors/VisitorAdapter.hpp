@@ -114,7 +114,21 @@ namespace ASTVisitors
         {
             visitDerived(x.type_);
             visitDerived(x.var);
-            // TODO visit RHS
+            if (x.rhs)
+                visitDerived(*x.rhs);
+            return ResultType();
+        }
+
+        ResultType operator()(ast::array_declaration& x)
+        {
+            visitDerived(x.type_);
+            visitDerived(x.var);
+            visitDerived(x.size);
+            if (x.rhs)
+            {
+                for (auto& op : *x.rhs)
+                    visitDerived(op);
+            }
             return ResultType();
         }
 

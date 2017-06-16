@@ -61,14 +61,14 @@ namespace parser {
     type_type const type("type");
 
     // Import the expression rule
-    namespace { auto const &expression = getExpressionParser(); }
+    namespace { auto const &expression2 = getExpressionParser(); }
 
     auto const statement_def =
             if_statement
             | while_statement
 //            | return_statement
             | var_decl_statement
-//            | array_decl_statement
+            | array_decl_statement
 //            | func_call
             | assignment
     ;
@@ -80,7 +80,7 @@ namespace parser {
             > '}'
     ;
 
-    auto const operand_list_def = expression % lit(',');
+    auto const operand_list_def = expression2 % lit(',');
 
 /*    auto var_decl =
             (
@@ -91,33 +91,36 @@ namespace parser {
     ;*/
 
     auto const var_decl_statement_def =
-
             (
                     (nocase_wholeword("var") | nocase_wholeword("const"))
                     > type
                     > variable
             )
-                    >> !lit('[')
-            > -(lit('=') > operand_list)
+            >> !lit('[')
+            > -(lit('=') > expression2)
             > lit(';')
     ;
 
-/*    auto const array_decl_statement_def =
-            var_decl
-            > lit('[') > expression > lit(']')
+    auto const array_decl_statement_def =
+            (
+                    (nocase_wholeword("var") | nocase_wholeword("const"))
+                    > type
+                    > variable
+            )
+            > lit('[') > expression2 > lit(']')
             > -(lit('=') > lit('{') > operand_list > lit('}'))
             > lit(';')
-    ;*/
+    ;
 
     auto const if_statement_def =
-            nocase_wholeword("if") > expression
+            nocase_wholeword("if") > expression2
             > block
             > -(nocase_wholeword("else") > block)
             > -lit(';')
     ;
 
     auto const while_statement_def =
-            nocase_wholeword("while") > expression
+            nocase_wholeword("while") > expression2
             > block
             > -lit(';')
     ;
@@ -125,7 +128,7 @@ namespace parser {
     auto const assignment_def =
             variable
             > '='
-            > expression
+            > expression2
             > ';'
     ;
 
@@ -134,7 +137,17 @@ namespace parser {
     auto const program_def = *statement;
 
     BOOST_SPIRIT_DEFINE(
-            statement, block, operand_list, var_decl_statement, /*array_decl_statement, */if_statement, while_statement, assignment, variable, type, program
+            statement,
+            block,
+            operand_list,
+            var_decl_statement,
+            array_decl_statement,
+            if_statement,
+            while_statement,
+            assignment,
+            variable,
+            type,
+            program
     );
 
     struct program_class : error_handler_base, x3::annotate_on_success {

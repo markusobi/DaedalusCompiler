@@ -71,9 +71,9 @@ int main(int argc, char* argv[]) {
     }
 
     using parser::iterator_type;
-    auto sourceBegin = sourceCode.cbegin();
+    const iterator_type sourceBegin = sourceCode.begin();
     iterator_type iter(sourceCode.begin());
-    iterator_type sourceEnd(sourceCode.cend());
+    const iterator_type sourceEnd(sourceCode.end());
 
     vmachine vm;
     code_gen::program program;

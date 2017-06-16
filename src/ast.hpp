@@ -96,8 +96,7 @@ namespace ast
     struct variable_declaration {
         type type_;
         variable var;
-        //boost::optional<operand> rhs;
-        boost::optional<std::list<operand>> rhs;
+        boost::optional<operand> rhs;
     };
 
     struct array_declaration {
@@ -114,6 +113,7 @@ namespace ast
     struct statement :
             x3::variant<
                     variable_declaration,
+                    array_declaration,
                     assignment,
                     boost::recursive_wrapper<if_statement>,
                     boost::recursive_wrapper<while_statement>,
