@@ -22,6 +22,14 @@ BOOST_FUSION_ADAPT_STRUCT(ast::expression,
                           first, rest
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::func_call,
+                          var, args
+)
+
+BOOST_FUSION_ADAPT_STRUCT(ast::array_access,
+                          var, index
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
                           type_, var, rhs
 )

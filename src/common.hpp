@@ -56,8 +56,8 @@ namespace parser {
     typedef x3::rule <type_class, ast::type> type_type;
 
     identifier_type const identifier = "identifier";
-    variable_type const variable("variable");
-    type_type const type("type");
+    variable_type const variable = "variable";
+    type_type const type = "type";
 
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;

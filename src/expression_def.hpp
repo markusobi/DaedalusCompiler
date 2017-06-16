@@ -20,6 +20,7 @@ namespace parser {
     using x3::char_;
     using x3::raw;
     using x3::lexeme;
+    using x3::lit;
 
     ////////////////////////////////////////////////////////////////////////////
     // Tokens
@@ -58,6 +59,8 @@ namespace parser {
     struct multiplicative_expr_class;
     struct unary_expr_class;
     struct primary_expr_class;
+    struct func_call_class;
+    struct array_access_class;
 
     typedef x3::rule <logical_or_expr_class, ast::expression> logical_or_expr_type;
     typedef x3::rule <logical_and_expr_class, ast::expression> logical_and_expr_type;
@@ -71,6 +74,8 @@ namespace parser {
     typedef x3::rule <multiplicative_expr_class, ast::expression> multiplicative_expr_type;
     typedef x3::rule <unary_expr_class, ast::operand> unary_expr_type;
     typedef x3::rule <primary_expr_class, ast::operand> primary_expr_type;
+    typedef x3::rule <func_call_class, ast::func_call> func_call_type;
+    typedef x3::rule <array_access_class, ast::array_access> array_access_type;
 
     expression_type const expression = "expression";
 
@@ -86,6 +91,8 @@ namespace parser {
     multiplicative_expr_type const multiplicative_expr = "multiplicative_expr";
     unary_expr_type const unary_expr = "unary_expr";
     primary_expr_type const primary_expr = "primary_expr";
+    func_call_type const func_call = "func_call";
+    array_access_type const array_access = "array_access";
 
     auto const logical_or_expr_def =
             logical_and_expr
@@ -133,19 +140,34 @@ namespace parser {
 
     auto const primary_expr_def =
             uint_
-            | identifier // FIXME: identifier is untagged
+            | func_call
+            | array_access
+            | variable
             | ('(' > expression > ')');
+
+    const auto func_call_def = variable
+                               >> '('
+                               > -(expression % ',')
+                               > ')';
+
+    const auto array_access_def = variable
+                                  >> '['
+                                  > expression
+                                  > ']';
 
     auto const expression_def = logical_or_expr;
 
     BOOST_SPIRIT_DEFINE(
-            expression, logical_or_expr, logical_and_expr,
+            expression,
+            logical_or_expr, logical_and_expr,
             bitwise_or_expr, bitwise_xor_expr, bitwise_and_expr,
             equality_expr, relational_expr,
             bitshift_expr,
             additive_expr, multiplicative_expr,
             unary_expr,
-            primary_expr
+            primary_expr,
+            func_call,
+            array_access
     );
 
     struct unary_expr_class : x3::annotate_on_success {

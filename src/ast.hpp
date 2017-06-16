@@ -23,6 +23,8 @@ namespace ast
     };
     struct unary;
     struct expression;
+    struct func_call;
+    struct array_access;
 
     struct variable : x3::position_tagged {
         variable(std::string const &name = "") : name(name) {}
@@ -36,7 +38,11 @@ namespace ast
 
     struct operand :
             x3::variant<
-                    nil, int, variable, x3::forward_ast<unary>, x3::forward_ast<expression>
+                    nil, int, variable,
+                    x3::forward_ast<unary>,
+                    x3::forward_ast<expression>,
+                    x3::forward_ast<func_call>,
+                    x3::forward_ast<array_access>
             > {
         using base_type::base_type;
         using base_type::operator=;
@@ -86,6 +92,16 @@ namespace ast
     struct expression : x3::position_tagged {
         operand first;
         std::list<operation> rest;
+    };
+
+    struct func_call : x3::position_tagged {
+        variable var;
+        std::list<operand> args;
+    };
+
+    struct array_access : x3::position_tagged {
+        variable var;
+        operand index;
     };
 
     struct assignment : x3::position_tagged {

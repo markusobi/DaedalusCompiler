@@ -103,6 +103,22 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(ast::func_call& x)
+        {
+            visitDerived(x.var);
+            // TODO add template std::list<T> ?
+            for (auto& op : x.args)
+                visitDerived(op);
+            return ResultType();
+        }
+
+        ResultType operator()(ast::array_access& x)
+        {
+            visitDerived(x.var);
+            visitDerived(x.index);
+            return ResultType();
+        }
+
         ResultType operator()(ast::assignment& x)
         {
             visitDerived(x.rhs);
