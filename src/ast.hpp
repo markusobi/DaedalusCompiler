@@ -137,6 +137,7 @@ namespace ast
                     array_declaration,
                     assignment,
                     return_statement,
+                    operand,
                     boost::recursive_wrapper<if_statement>,
                     boost::recursive_wrapper<while_statement>,
                     boost::recursive_wrapper<statement_list>

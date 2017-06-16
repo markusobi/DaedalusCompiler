@@ -66,8 +66,8 @@ namespace parser {
             | return_statement
             | var_decl_statement
             | array_decl_statement
-//            | func_call
             | assignment
+            | (expression2 > ';')
     ;
 
     auto const block_def =
@@ -119,7 +119,7 @@ namespace parser {
 
     auto const assignment_def =
             (array_access2 | variable)
-            >> '=' // FIXME might be operator ==
+            >> '=' >> !lit('=') // exclude operator ==
             > expression2
             > ';'
     ;

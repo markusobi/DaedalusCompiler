@@ -20,7 +20,7 @@ namespace parser {
     using x3::char_;
     using x3::raw;
     using x3::lexeme;
-    using x3::lit;
+    using encoding::lit;
 
     ////////////////////////////////////////////////////////////////////////////
     // Tokens
