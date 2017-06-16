@@ -105,7 +105,7 @@ namespace ast
     };
 
     struct assignment : x3::position_tagged {
-        variable lhs;
+        operand lhs;
         operand rhs;
     };
 

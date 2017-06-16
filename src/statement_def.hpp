@@ -58,6 +58,7 @@ namespace parser {
 
     // Import the expression rule
     namespace { auto const &expression2 = getExpressionParser(); }
+    namespace { auto const &array_access2 = getArrayAccessParser(); }
 
     auto const statement_def =
             if_statement
@@ -76,28 +77,26 @@ namespace parser {
             > '}'
     ;
 
-    auto const operand_list_def = expression2 % lit(',');
+    auto const operand_list_def = expression2 % ',';
 
     auto var_decl =
-            (
-                    (nocase_wholeword("var") | nocase_wholeword("const"))
-                    > type
-                    > variable
-            )
+            (nocase_wholeword("var") | nocase_wholeword("const"))
+            > type
+            > variable
     ;
 
     auto const var_decl_statement_def =
             var_decl
             >> !lit('[')
-            > -(lit('=') > expression2)
-            > lit(';')
+            > -('=' > expression2)
+            > ';'
     ;
 
     auto const array_decl_statement_def =
             var_decl
-            > lit('[') > expression2 > lit(']')
-            > -(lit('=') > lit('{') > operand_list > lit('}'))
-            > lit(';')
+            > '[' > expression2 > ']'
+            > -(lit('=') > '{' > operand_list > '}')
+            > ';'
     ;
 
     auto const return_statement_def =
@@ -119,8 +118,8 @@ namespace parser {
     ;
 
     auto const assignment_def =
-            variable
-            > '='
+            (array_access2 | variable)
+            >> '=' // FIXME might be operator ==
             > expression2
             > ';'
     ;

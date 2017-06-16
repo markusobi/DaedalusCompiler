@@ -60,7 +60,6 @@ namespace parser {
     struct unary_expr_class;
     struct primary_expr_class;
     struct func_call_class;
-    struct array_access_class;
 
     typedef x3::rule <logical_or_expr_class, ast::expression> logical_or_expr_type;
     typedef x3::rule <logical_and_expr_class, ast::expression> logical_and_expr_type;
@@ -75,7 +74,6 @@ namespace parser {
     typedef x3::rule <unary_expr_class, ast::operand> unary_expr_type;
     typedef x3::rule <primary_expr_class, ast::operand> primary_expr_type;
     typedef x3::rule <func_call_class, ast::func_call> func_call_type;
-    typedef x3::rule <array_access_class, ast::array_access> array_access_type;
 
     expression_type const expression = "expression";
 
@@ -175,11 +173,4 @@ namespace parser {
     struct primary_expr_class : x3::annotate_on_success {
     };
 
-}
-
-namespace
-{
-    parser::expression_type const &getExpressionParser();
-
-    const std::map<ast::optoken, std::string>& getOpTokenLookup();
 }

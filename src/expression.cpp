@@ -9,6 +9,7 @@
 
 namespace parser {
     BOOST_SPIRIT_INSTANTIATE(expression_type, iterator_type, context_type);
+    BOOST_SPIRIT_INSTANTIATE(array_access_type, iterator_type, context_type);
 }
 
 const parser::expression_type& getExpressionParser()
@@ -16,6 +17,14 @@ const parser::expression_type& getExpressionParser()
     parser::add_keywords();
     return parser::expression;
 }
+
+const parser::array_access_type& getArrayAccessParser()
+{
+    parser::add_keywords();
+    return parser::array_access;
+}
+
+
 
 const std::map<ast::optoken, std::string>& getOpTokenLookup()
 {

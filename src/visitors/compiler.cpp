@@ -331,7 +331,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::assignment& x) {
-        if (!visitDerived(x.rhs))
+/*        if (!visitDerived(x.rhs))
             return false;
         int const *p = program.find_var(x.lhs.name);
         if (p == 0) {
@@ -339,7 +339,9 @@ namespace code_gen {
             return false;
         }
         program.op(op_store, *p);
-        return true;
+        return true;*/
+        throw std::runtime_error("unimplemented");
+        return false;
     }
 
     result_type compiler::operator()(ast::variable_declaration& x) {
