@@ -57,7 +57,7 @@ namespace parser {
     assignment_type const assignment("assignment");
 
     // Import the expression rule
-    namespace { auto const &expression2 = getExpressionParser(); }
+    namespace { auto const &operand2 = getOperandParser(); }
     namespace { auto const &array_access2 = getArrayAccessParser(); }
 
     auto const statement_def =
@@ -67,7 +67,7 @@ namespace parser {
             | var_decl_statement
             | array_decl_statement
             | assignment
-            | (expression2 > ';')
+            | (operand2 > ';')
     ;
 
     auto const block_def =
@@ -77,7 +77,7 @@ namespace parser {
             > '}'
     ;
 
-    auto const operand_list_def = expression2 % ',';
+    auto const operand_list_def = operand2 % ',';
 
     auto var_decl =
             (nocase_wholeword("var") | nocase_wholeword("const"))
@@ -88,31 +88,31 @@ namespace parser {
     auto const var_decl_statement_def =
             var_decl
             >> !lit('[')
-            > -('=' > expression2)
+            > -('=' > operand2)
             > ';'
     ;
 
     auto const array_decl_statement_def =
             var_decl
-            > '[' > expression2 > ']'
+            > '[' > operand2 > ']'
             > -(lit('=') > '{' > operand_list > '}')
             > ';'
     ;
 
     auto const return_statement_def =
             nocase_wholeword("return")
-            > expression2;
+            > operand2;
     ;
 
     auto const if_statement_def =
-            nocase_wholeword("if") > expression2
+            nocase_wholeword("if") > operand2
             > block
             > -(nocase_wholeword("else") > block)
             > -lit(';')
     ;
 
     auto const while_statement_def =
-            nocase_wholeword("while") > expression2
+            nocase_wholeword("while") > operand2
             > block
             > -lit(';')
     ;
@@ -120,7 +120,7 @@ namespace parser {
     auto const assignment_def =
             (array_access2 | variable)
             >> '=' >> !lit('=') // exclude operator ==
-            > expression2
+            > operand2
             > ';'
     ;
 

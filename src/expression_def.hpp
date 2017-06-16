@@ -75,7 +75,7 @@ namespace parser {
     typedef x3::rule <primary_expr_class, ast::operand> primary_expr_type;
     typedef x3::rule <func_call_class, ast::func_call> func_call_type;
 
-    expression_type const expression = "expression";
+    operand_type const operand = "operand";
 
     logical_or_expr_type const logical_or_expr = "logical_or_expr";
     logical_and_expr_type const logical_and_expr = "logical_and_expr";
@@ -141,22 +141,22 @@ namespace parser {
             | func_call
             | array_access
             | variable
-            | ('(' > expression > ')');
+            | ('(' > operand > ')');
 
     const auto func_call_def = variable
                                >> '('
-                               > -(expression % ',')
+                               > -(operand % ',')
                                > ')';
 
     const auto array_access_def = variable
                                   >> '['
-                                  > expression
+                                  > operand
                                   > ']';
 
-    auto const expression_def = logical_or_expr;
+    auto const operand_def = logical_or_expr;
 
     BOOST_SPIRIT_DEFINE(
-            expression,
+            operand,
             logical_or_expr, logical_and_expr,
             bitwise_or_expr, bitwise_xor_expr, bitwise_and_expr,
             equality_expr, relational_expr,

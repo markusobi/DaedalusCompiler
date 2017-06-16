@@ -12,15 +12,15 @@
 
 namespace x3 = boost::spirit::x3;
 namespace parser {
-    struct expression_class;
+    struct operand_class;
     struct array_access_class;
-    typedef x3::rule<expression_class, ast::operand> expression_type;
+    typedef x3::rule<operand_class, ast::operand> operand_type;
     typedef x3::rule<array_access_class, ast::operand> array_access_type;
 
-    BOOST_SPIRIT_DECLARE(expression_type);
+    BOOST_SPIRIT_DECLARE(operand_type);
 }
 
-const parser::expression_type& getExpressionParser();
+const parser::operand_type& getOperandParser();
 
 const parser::array_access_type& getArrayAccessParser();
 
