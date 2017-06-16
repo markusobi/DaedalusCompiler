@@ -71,8 +71,9 @@ int main(int argc, char* argv[]) {
     }
 
     using parser::iterator_type;
+    auto sourceBegin = sourceCode.cbegin();
     iterator_type iter(sourceCode.begin());
-    iterator_type end(sourceCode.end());
+    iterator_type sourceEnd(sourceCode.cend());
 
     vmachine vm;
     code_gen::program program;
@@ -80,7 +81,7 @@ int main(int argc, char* argv[]) {
 
     using boost::spirit::x3::with;
     using parser::error_handler_type;
-    error_handler_type error_handler(iter, end, std::cerr); // Our error handler
+    error_handler_type error_handler(iter, sourceEnd, std::cerr); // Our error handler
 
     // Our compiler
     code_gen::compiler compile(program, error_handler);
@@ -95,10 +96,11 @@ int main(int argc, char* argv[]) {
             ];
 
     using parser::encoding::space;
-    bool success = phrase_parse(iter, end, parser, space, ast);
-    if (!success || iter != end)
+    bool success = phrase_parse(iter, sourceEnd, parser, space, ast);
+    if (!success || iter != sourceEnd)
     {
         std::cerr << "Parsing failed. Compilation aborted" << std::endl;
+        std::cout << "parsed so far: " << std::string(sourceBegin, iter + 1) << std::endl;
         return 1;
     }
 
@@ -113,26 +115,5 @@ int main(int argc, char* argv[]) {
     {
         visitor->start(ast);
     }
-
-    std::cout << "-------------------------\n";
-
-    if (compile.compile(ast)) {
-        std::cout << "Success\n";
-        std::cout << "-------------------------\n";
-        vm.execute(program());
-
-        std::cout << "-------------------------\n";
-        std::cout << "Assembler----------------\n\n";
-        program.print_assembler();
-
-        std::cout << "-------------------------\n";
-        std::cout << "Results------------------\n\n";
-        program.print_variables(vm.get_stack());
-    } else {
-        std::cout << "Compile failure\n";
-    }
-
-
-    std::cout << "-------------------------\n\n";
     return 0;
 }

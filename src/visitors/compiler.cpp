@@ -343,18 +343,22 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::variable_declaration& x) {
-        int const *p = program.find_var(x.assign.lhs.name);
+/*        int const *p = program.find_var(x.var.name);
         if (p != 0) {
-            error_handler(x.assign.lhs, "Duplicate variable: " + x.assign.lhs.name);
+            error_handler(x.var, "Duplicate variable: " + x.var.name);
             return false;
         }
-        bool r = visitDerived(x.assign.rhs);
-        if (r) // don't add the variable if the RHS fails
+        bool success = true;
+        if (x.rhs)
+            success = visitDerived(*x.rhs);
+        if (success) // don't add the variable if the RHS fails
         {
-            program.add_var(x.assign.lhs.name);
-            program.op(op_store, *program.find_var(x.assign.lhs.name));
+            program.add_var(x.var.name);
+            program.op(op_store, *program.find_var(x.var.name));
         }
-        return r;
+        return success;*/
+        throw std::runtime_error("unimplemented");
+        return false;
     }
 
     result_type compiler::operator()(ast::statement_list& x) {

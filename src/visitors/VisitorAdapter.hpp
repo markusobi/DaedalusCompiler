@@ -112,7 +112,14 @@ namespace ASTVisitors
 
         ResultType operator()(ast::variable_declaration& x)
         {
-            visitDerived(x.assign);
+            visitDerived(x.type_);
+            visitDerived(x.var);
+            // TODO visit RHS
+            return ResultType();
+        }
+
+        ResultType operator()(ast::type& x)
+        {
             return ResultType();
         }
 

@@ -24,37 +24,52 @@ namespace parser {
     struct program_class;
     struct statement_class;
     struct block_class;
-    struct variable_declaration_class;
+    //struct var_decl_class;
+    class operand_list_class;
+    struct var_decl_statement_class;
+    struct array_decl_statement_class;
     struct if_statement_class;
     struct while_statement_class;
     struct assignment_class;
     struct variable_class;
+    struct type_class;
 
     typedef x3::rule <program_class, ast::program> program_type;
     typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <block_class, ast::block> block_type;
-    typedef x3::rule <variable_declaration_class, ast::variable_declaration> variable_declaration_type;
+    //typedef x3::rule <var_decl_class, ast::variable_declaration> var_decl_type;
+    typedef x3::rule <operand_list_class, std::list<ast::operand>> operand_list_type;
+    typedef x3::rule <var_decl_statement_class, ast::variable_declaration> var_decl_statement_type;
+    typedef x3::rule <array_decl_statement_class, ast::array_declaration> array_decl_statement_type;
     typedef x3::rule <if_statement_class, ast::if_statement> if_statement_type;
     typedef x3::rule <while_statement_class, ast::while_statement> while_statement_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
     typedef x3::rule <variable_class, ast::variable> variable_type;
+    typedef x3::rule <type_class, ast::type> type_type;
 
     program_type const program("program");
     statement_type const statement("statement");
     block_type const block("block");
-    variable_declaration_type const variable_declaration("variable_declaration");
+    //var_decl_type const var_decl("var_decl");
+    operand_list_type const operand_list("operand_list");
+    var_decl_statement_type const var_decl_statement("var_decl_statement");
+    array_decl_statement_type const array_decl_statement("array_decl_statement");
     if_statement_type const if_statement("if_statement");
     while_statement_type const while_statement("while_statement");
     assignment_type const assignment("assignment");
     variable_type const variable("variable");
+    type_type const type("type");
 
     // Import the expression rule
     namespace { auto const &expression = getExpressionParser(); }
 
     auto const statement_def =
-            variable_declaration
-            | if_statement
+            if_statement
             | while_statement
+//            | return_statement
+            | var_decl_statement
+//            | array_decl_statement
+//            | func_call
             | assignment
     ;
 
@@ -65,10 +80,34 @@ namespace parser {
             > '}'
     ;
 
-    auto const variable_declaration_def =
-            nocase_wholeword("var")
-            > assignment
+    auto const operand_list_def = expression % lit(',');
+
+/*    auto var_decl =
+            (
+            (nocase_wholeword("var") | nocase_wholeword("const"))
+            > type
+            > variable
+            )
+    ;*/
+
+    auto const var_decl_statement_def =
+
+            (
+                    (nocase_wholeword("var") | nocase_wholeword("const"))
+                    > type
+                    > variable
+            )
+                    >> !lit('[')
+            > -(lit('=') > operand_list)
+            > lit(';')
     ;
+
+/*    auto const array_decl_statement_def =
+            var_decl
+            > lit('[') > expression > lit(']')
+            > -(lit('=') > lit('{') > operand_list > lit('}'))
+            > lit(';')
+    ;*/
 
     auto const if_statement_def =
             nocase_wholeword("if") > expression
@@ -91,10 +130,11 @@ namespace parser {
     ;
 
     auto const variable_def = identifier;
+    auto const type_def = identifier;
     auto const program_def = *statement;
 
     BOOST_SPIRIT_DEFINE(
-            statement, block, variable_declaration, if_statement, while_statement, assignment, variable, program
+            statement, block, operand_list, var_decl_statement, /*array_decl_statement, */if_statement, while_statement, assignment, variable, type, program
     );
 
     struct program_class : error_handler_base, x3::annotate_on_success {

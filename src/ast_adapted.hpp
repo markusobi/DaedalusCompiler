@@ -23,7 +23,11 @@ BOOST_FUSION_ADAPT_STRUCT(ast::expression,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
-                          assign
+                          type_, var, rhs
+)
+
+BOOST_FUSION_ADAPT_STRUCT(ast::array_declaration,
+                          type_, var, size, rhs
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::assignment,

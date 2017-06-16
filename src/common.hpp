@@ -34,12 +34,12 @@ namespace parser {
                     ("else")
                     ("while")
                     ("return")
-                    ("int") // TODO don't forbid primitive types in variable names in the parser, since class names need to be checked anyway
+/*                    ("int")
                     ("float")
                     ("string")
-                    ("instance")
-                    ("func")
+                    ("instance")*/
                     ("void")
+                    ("func")
                     ("var")
                     ("const");
             return keywords;

@@ -26,7 +26,11 @@ namespace ast
 
     struct variable : x3::position_tagged {
         variable(std::string const &name = "") : name(name) {}
+        std::string name;
+    };
 
+    struct type : x3::position_tagged {
+        type(std::string const &name = "") : name(name) {}
         std::string name;
     };
 
@@ -90,7 +94,17 @@ namespace ast
     };
 
     struct variable_declaration {
-        assignment assign;
+        type type_;
+        variable var;
+        //boost::optional<operand> rhs;
+        boost::optional<std::list<operand>> rhs;
+    };
+
+    struct array_declaration {
+        type type_;
+        variable var;
+        operand size;
+        boost::optional<std::list<operand>> rhs;
     };
 
     struct if_statement;
@@ -123,6 +137,15 @@ namespace ast
     struct while_statement {
         operand condition;
         block body;
+    };
+
+    typedef std::list<variable_declaration> param_list;
+
+    struct function
+    {
+        // TODO use variable or other
+        std::string identifier;
+        param_list params;
     };
 
     typedef statement_list program;
