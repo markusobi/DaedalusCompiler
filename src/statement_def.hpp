@@ -85,31 +85,23 @@ namespace parser {
 
     auto const operand_list_def = expression2 % lit(',');
 
-/*    auto var_decl =
-            (
-            (nocase_wholeword("var") | nocase_wholeword("const"))
-            > type
-            > variable
-            )
-    ;*/
-
-    auto const var_decl_statement_def =
+    auto var_decl =
             (
                     (nocase_wholeword("var") | nocase_wholeword("const"))
                     > type
                     > variable
             )
+    ;
+
+    auto const var_decl_statement_def =
+            var_decl
             >> !lit('[')
             > -(lit('=') > expression2)
             > lit(';')
     ;
 
     auto const array_decl_statement_def =
-            (
-                    (nocase_wholeword("var") | nocase_wholeword("const"))
-                    > type
-                    > variable
-            )
+            var_decl
             > lit('[') > expression2 > lit(']')
             > -(lit('=') > lit('{') > operand_list > lit('}'))
             > lit(';')

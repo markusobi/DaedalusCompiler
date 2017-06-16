@@ -149,10 +149,18 @@ namespace ast
 
     struct function
     {
-        // TODO use variable or other
-        std::string identifier;
+        type type_;
+        variable var;
         param_list params;
+        block body;
     };
+
+    typedef x3::variant<
+            variable_declaration, // TODO visitor check forbid global write on non-const
+            array_declaration, // TODO visitor check forbid global write on non-const
+            function
+            // TODO more
+    > global_decl;
 
     typedef statement_list program;
 
