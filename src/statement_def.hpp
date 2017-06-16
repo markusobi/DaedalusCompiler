@@ -8,7 +8,6 @@
 #define BOOST_SPIRIT_X3_CALC9_STATEMENT_DEF_HPP
 
 #include <boost/spirit/home/x3.hpp>
-#include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
 #include "ast.hpp"
 #include "ast_adapted.hpp"
 #include "statement.hpp"
@@ -32,8 +31,6 @@ namespace parser {
     struct if_statement_class;
     struct while_statement_class;
     struct assignment_class;
-    struct variable_class;
-    struct type_class;
 
     typedef x3::rule <program_class, ast::program> program_type;
     typedef x3::rule <statement_class, ast::statement> statement_type;
@@ -46,8 +43,6 @@ namespace parser {
     typedef x3::rule <if_statement_class, ast::if_statement> if_statement_type;
     typedef x3::rule <while_statement_class, ast::while_statement> while_statement_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
-    typedef x3::rule <variable_class, ast::variable> variable_type;
-    typedef x3::rule <type_class, ast::type> type_type;
 
     program_type const program("program");
     statement_type const statement("statement");
@@ -60,8 +55,6 @@ namespace parser {
     if_statement_type const if_statement("if_statement");
     while_statement_type const while_statement("while_statement");
     assignment_type const assignment("assignment");
-    variable_type const variable("variable");
-    type_type const type("type");
 
     // Import the expression rule
     namespace { auto const &expression2 = getExpressionParser(); }
@@ -132,8 +125,6 @@ namespace parser {
             > ';'
     ;
 
-    auto const variable_def = identifier;
-    auto const type_def = identifier;
     auto const program_def = *statement;
 
     BOOST_SPIRIT_DEFINE(
@@ -146,16 +137,12 @@ namespace parser {
             if_statement,
             while_statement,
             assignment,
-            variable,
-            type,
             program
     );
 
     struct program_class : error_handler_base, x3::annotate_on_success {
     };
     struct assignment_class : x3::annotate_on_success {
-    };
-    struct variable_class : x3::annotate_on_success {
     };
 }
 

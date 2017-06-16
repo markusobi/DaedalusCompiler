@@ -7,6 +7,7 @@
 #pragma once
 
 #include <boost/spirit/home/x3.hpp>
+#include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
 
 namespace parser {
     using x3::raw;
@@ -47,8 +48,16 @@ namespace parser {
     }
 
     struct identifier_class;
+    struct variable_class;
+    struct type_class;
+
     typedef x3::rule <identifier_class, std::string> identifier_type;
+    typedef x3::rule <variable_class, ast::variable> variable_type;
+    typedef x3::rule <type_class, ast::type> type_type;
+
     identifier_type const identifier = "identifier";
+    variable_type const variable("variable");
+    type_type const type("type");
 
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;
@@ -67,5 +76,13 @@ namespace parser {
             (ident_char - digit) >> *ident_char
     ]];
 
-    BOOST_SPIRIT_DEFINE(identifier);
+    const auto variable_def = identifier;
+    auto const type_def = identifier;
+
+    BOOST_SPIRIT_DEFINE(identifier, variable, type);
+
+    struct variable_class : x3::annotate_on_success {
+    };
+    struct type_class : x3::annotate_on_success {
+    };
 }
