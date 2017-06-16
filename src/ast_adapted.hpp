@@ -34,6 +34,10 @@ BOOST_FUSION_ADAPT_STRUCT(ast::assignment,
                           lhs, rhs
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::return_statement,
+                          operand_
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::if_statement,
                           condition, then, else_
 )

@@ -28,6 +28,7 @@ namespace parser {
     class operand_list_class;
     struct var_decl_statement_class;
     struct array_decl_statement_class;
+    struct return_statement_class;
     struct if_statement_class;
     struct while_statement_class;
     struct assignment_class;
@@ -41,6 +42,7 @@ namespace parser {
     typedef x3::rule <operand_list_class, std::list<ast::operand>> operand_list_type;
     typedef x3::rule <var_decl_statement_class, ast::variable_declaration> var_decl_statement_type;
     typedef x3::rule <array_decl_statement_class, ast::array_declaration> array_decl_statement_type;
+    typedef x3::rule <return_statement_class, ast::return_statement> return_statement_type;
     typedef x3::rule <if_statement_class, ast::if_statement> if_statement_type;
     typedef x3::rule <while_statement_class, ast::while_statement> while_statement_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
@@ -54,6 +56,7 @@ namespace parser {
     operand_list_type const operand_list("operand_list");
     var_decl_statement_type const var_decl_statement("var_decl_statement");
     array_decl_statement_type const array_decl_statement("array_decl_statement");
+    return_statement_type const return_statement("return_statement");
     if_statement_type const if_statement("if_statement");
     while_statement_type const while_statement("while_statement");
     assignment_type const assignment("assignment");
@@ -66,7 +69,7 @@ namespace parser {
     auto const statement_def =
             if_statement
             | while_statement
-//            | return_statement
+            | return_statement
             | var_decl_statement
             | array_decl_statement
 //            | func_call
@@ -112,6 +115,11 @@ namespace parser {
             > lit(';')
     ;
 
+    auto const return_statement_def =
+            nocase_wholeword("return")
+            > expression2;
+    ;
+
     auto const if_statement_def =
             nocase_wholeword("if") > expression2
             > block
@@ -142,6 +150,7 @@ namespace parser {
             operand_list,
             var_decl_statement,
             array_decl_statement,
+            return_statement,
             if_statement,
             while_statement,
             assignment,

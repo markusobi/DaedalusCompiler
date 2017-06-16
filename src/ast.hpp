@@ -106,6 +106,11 @@ namespace ast
         boost::optional<std::list<operand>> rhs;
     };
 
+    struct return_statement
+    {
+        operand operand_;
+    };
+
     struct if_statement;
     struct while_statement;
     struct statement_list;
@@ -115,6 +120,7 @@ namespace ast
                     variable_declaration,
                     array_declaration,
                     assignment,
+                    return_statement,
                     boost::recursive_wrapper<if_statement>,
                     boost::recursive_wrapper<while_statement>,
                     boost::recursive_wrapper<statement_list>

@@ -137,6 +137,12 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(ast::return_statement& x)
+        {
+            visitDerived(x.operand_);
+            return ResultType();
+        }
+
         ResultType operator()(ast::statement& x)
         {
             // dispatch at runtime dependent on the type inside the variant
