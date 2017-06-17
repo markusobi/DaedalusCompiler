@@ -38,6 +38,7 @@ namespace ast
 
     struct typed_var
     {
+        bool isConst;
         type type_;
         variable var;
     };

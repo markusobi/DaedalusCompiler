@@ -84,7 +84,7 @@ namespace parser {
     auto const operand_list_def = operand2 % ',';
 
     auto var_decl_def =
-            (nocase_wholeword("var") | nocase_wholeword("const"))
+            nocase_wholeword(var_const)
             > type
             > variable
     ;

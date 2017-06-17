@@ -140,7 +140,7 @@ namespace ASTVisitors
 
         result_type operator()(ast::typed_var& x)
         {
-            *this << "(var|const) ";
+            *this << (x.isConst ? "const " : "var ");
             visitDerived(x.type_);
             *this << ' ';
             visitDerived(x.var);

@@ -19,6 +19,7 @@ namespace parser {
 
     namespace {
         x3::symbols<> keywords;
+        x3::symbols<bool> var_const_mapping;
         const x3::symbols<>& getKeywords()
         {
             static bool once = false;
@@ -45,19 +46,35 @@ namespace parser {
                     ("const");
             return keywords;
         }
+
+        x3::symbols<bool>& getVarConst()
+        {
+            static bool once = false;
+            if (once)
+                return var_const_mapping;
+            once = true;
+
+            var_const_mapping.add
+                    ("const", true)
+                    ("var", false);
+            return var_const_mapping;
+        }
     }
 
     struct identifier_class;
     struct variable_class;
     struct type_class;
+    struct var_const_class;
 
     typedef x3::rule <identifier_class, std::string> identifier_type;
     typedef x3::rule <variable_class, ast::variable> variable_type;
     typedef x3::rule <type_class, ast::type> type_type;
+    typedef x3::rule <var_const_class, bool> var_const_type;
 
     identifier_type const identifier = "identifier";
     variable_type const variable = "variable";
     type_type const type = "type";
+    var_const_type const var_const = "type";
 
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;
@@ -78,13 +95,15 @@ namespace parser {
 
     const auto variable_def = identifier;
     auto const type_def = identifier;
+    const auto var_const_def = getVarConst();
 
     //qi::real_parser<float, qi::strict_real_policies<float>> strict_float;
 
-    BOOST_SPIRIT_DEFINE(identifier, variable, type);
+    BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const);
 
     struct variable_class : x3::annotate_on_success {
     };
     struct type_class : x3::annotate_on_success {
     };
+
 }

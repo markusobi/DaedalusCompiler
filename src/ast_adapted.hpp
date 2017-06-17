@@ -31,7 +31,7 @@ BOOST_FUSION_ADAPT_STRUCT(ast::array_access,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::typed_var,
-                          type_, var
+                          isConst, type_, var
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
