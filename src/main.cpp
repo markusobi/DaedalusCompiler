@@ -24,6 +24,7 @@
 #include "error_handler.hpp"
 #include "config.hpp"
 #include <iostream>
+#include <visitors/ExpressionCollapse.hpp>
 #include "common.hpp"
 #include "visitors/PrettyPrinter.hpp"
 #include "visitors/DumpAstVisitor.hpp"
@@ -108,6 +109,7 @@ int main(int argc, char* argv[]) {
     using namespace ASTVisitors;
     std::list<std::unique_ptr<BaseVisitor>> visitors;
     //visitors.push_back(std::make_unique<DumpAstVisitor>(error_handler));
+    visitors.push_back(std::make_unique<ExpressionCollapse>(error_handler));
     visitors.push_back(std::make_unique<PrettyPrinter>(error_handler, std::cout));
 
     // Run visitors

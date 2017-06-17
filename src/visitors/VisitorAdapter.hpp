@@ -130,6 +130,7 @@ namespace ASTVisitors
         {
             visitDerived(x.type_);
             visitDerived(x.var);
+            return ResultType();
         }
 
         ResultType operator()(ast::variable_declaration& x)
@@ -173,6 +174,7 @@ namespace ASTVisitors
         {
             for (auto& global_decl : x)
                 visitDerived(global_decl);
+            return ResultType();
         }
 
         ResultType operator()(ast::global_decl& x)

@@ -46,6 +46,14 @@ namespace ASTVisitors
             *this << x.name;
         }
 
+        result_type operator()(ast::func_call& x)
+        {
+            visitDerived(x.var);
+            *this << '(';
+            join(x.args, ", ");
+            *this << ')';
+        }
+
         result_type operator()(ast::type& x)
         {
             *this << x.name;
@@ -85,14 +93,13 @@ namespace ASTVisitors
                 *this << " = ";
                 visitDerived(*x.rhs);
             }
-            *this << ';';
         }
 
         result_type operator()(ast::statement& x)
         {
             writeIndented("");
             visitBase(x);
-            *this << "\n";
+            *this << ";\n";
         }
 
         result_type operator()(ast::block& x)
@@ -158,14 +165,21 @@ namespace ASTVisitors
                 join(*x.rhs, ", ");
                 *this << '}';
             }
-            *this << ';';
+        }
+
+        result_type operator()(ast::array_access& x)
+        {
+            visitDerived(x.var);
+            *this << '[';
+            visitDerived(x.index);
+            *this << ']';
         }
 
         result_type operator()(ast::global_decl& x)
         {
             writeIndented("");
             visitBase(x);
-            *this << '\n';
+            *this << ";\n";
         }
 
         template <typename T>
