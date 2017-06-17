@@ -100,14 +100,14 @@ int main(int argc, char* argv[]) {
     if (!success || iter != sourceEnd)
     {
         std::cerr << "Parsing failed. Compilation aborted" << std::endl;
-        std::cout << "parsed so far: " << std::string(sourceBegin, iter + 1) << std::endl;
+        std::cout << "parsed so far:\n" << std::string(sourceBegin, iter + 1) << std::endl;
         return 1;
     }
 
     // Visitors
     using namespace ASTVisitors;
     std::list<std::unique_ptr<BaseVisitor>> visitors;
-    visitors.push_back(std::make_unique<DumpAstVisitor>(error_handler));
+    //visitors.push_back(std::make_unique<DumpAstVisitor>(error_handler));
     visitors.push_back(std::make_unique<PrettyPrinter>(error_handler, std::cout));
 
     // Run visitors

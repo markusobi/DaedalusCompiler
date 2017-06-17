@@ -126,10 +126,15 @@ namespace ASTVisitors
             return ResultType();
         }
 
-        ResultType operator()(ast::variable_declaration& x)
+        ResultType operator()(ast::typed_var& x)
         {
             visitDerived(x.type_);
             visitDerived(x.var);
+        }
+
+        ResultType operator()(ast::variable_declaration& x)
+        {
+            visitDerived(x.typed_var_);
             if (x.rhs)
                 visitDerived(*x.rhs);
             return ResultType();
@@ -137,8 +142,7 @@ namespace ASTVisitors
 
         ResultType operator()(ast::array_declaration& x)
         {
-            visitDerived(x.type_);
-            visitDerived(x.var);
+            visitDerived(x.typed_var_);
             visitDerived(x.size);
             if (x.rhs)
             {
@@ -163,6 +167,28 @@ namespace ASTVisitors
         {
             // dispatch at runtime dependent on the type inside the variant
             return boost::apply_visitor(derived(), x);
+        }
+
+        ResultType operator()(ast::program& x)
+        {
+            for (auto& global_decl : x)
+                visitDerived(global_decl);
+        }
+
+        ResultType operator()(ast::global_decl& x)
+        {
+            // dispatch at runtime dependent on the type inside the variant
+            return boost::apply_visitor(derived(), x);
+        }
+
+        ResultType operator()(ast::function& x)
+        {
+            visitDerived(x.type_);
+            visitDerived(x.var);
+            for (auto& decl : x.params)
+                visitDerived(decl);
+            visitDerived(x.body);
+            return ResultType();
         }
 
         ResultType operator()(ast::statement_list& x)

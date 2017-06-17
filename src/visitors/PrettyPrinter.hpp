@@ -46,6 +46,11 @@ namespace ASTVisitors
             *this << x.name;
         }
 
+        result_type operator()(ast::type& x)
+        {
+            *this << x.name;
+        }
+
         result_type operator()(ast::operation& x)
         {
             *this << " " << getOpTokenLookup().at(x.operator_) << " ";
@@ -74,25 +79,30 @@ namespace ASTVisitors
 
         result_type operator()(ast::variable_declaration& x)
         {
-            *this << "var ";
-            visitBase(x);
+            visitDerived(x.typed_var_);
+            if (x.rhs)
+            {
+                *this << " = ";
+                visitDerived(*x.rhs);
+            }
+            *this << ';';
         }
 
         result_type operator()(ast::statement& x)
         {
             writeIndented("");
             visitBase(x);
-            *this << ";\n";
+            *this << "\n";
         }
 
-        result_type operator()(ast::statement_list& x)
+        result_type operator()(ast::block& x)
         {
             writeIndentedLine("{");
             {
                 Indentation ident(*this);
                 visitBase(x);
             }
-            writeIndentedLine("}");
+            writeIndented("}");
         }
 
         result_type operator()(ast::if_statement& x)
@@ -114,6 +124,61 @@ namespace ASTVisitors
             visitDerived(x.condition);
             *this << ")\n";
             visitDerived(x.body);
+        }
+
+        result_type operator()(ast::function& x)
+        {
+            writeIndented("func ");
+            visitDerived(x.type_);
+            *this << ' ';
+            visitDerived(x.var);
+            *this << "(";
+            join(x.params, ", ");
+            *this << ")\n";
+            visitDerived(x.body);
+        }
+
+        result_type operator()(ast::typed_var& x)
+        {
+            *this << "(var|const) ";
+            visitDerived(x.type_);
+            *this << ' ';
+            visitDerived(x.var);
+        }
+
+        result_type operator()(ast::array_declaration& x)
+        {
+            visitDerived(x.typed_var_);
+            *this << '[';
+            visitDerived(x.size);
+            *this << ']';
+            if (x.rhs)
+            {
+                *this << " = {";
+                join(*x.rhs, ", ");
+                *this << '}';
+            }
+            *this << ';';
+        }
+
+        result_type operator()(ast::global_decl& x)
+        {
+            writeIndented("");
+            visitBase(x);
+            *this << '\n';
+        }
+
+        template <typename T>
+        void join(T& iterable, const std::string& delim)
+        {
+            const auto begin = std::begin(iterable);
+            const auto end = std::end(iterable);
+            for (auto it = begin; it != end; ++it)
+            {
+                if (it != begin)
+                    *this << delim;
+                visitDerived(*it);
+            }
         }
 
         /**

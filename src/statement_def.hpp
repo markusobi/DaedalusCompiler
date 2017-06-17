@@ -20,10 +20,9 @@ namespace parser {
     using x3::lexeme;
     using encoding::lit;
 
-    struct program_class;
     struct statement_class;
     struct block_class;
-    //struct var_decl_class;
+    struct var_decl_class;
     class operand_list_class;
     struct var_decl_statement_class;
     struct array_decl_statement_class;
@@ -31,11 +30,11 @@ namespace parser {
     struct if_statement_class;
     struct while_statement_class;
     struct assignment_class;
+    struct function_class;
 
-    typedef x3::rule <program_class, ast::program> program_type;
     typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <block_class, ast::block> block_type;
-    //typedef x3::rule <var_decl_class, ast::variable_declaration> var_decl_type;
+    typedef x3::rule <var_decl_class, ast::typed_var> var_decl_type;
     typedef x3::rule <operand_list_class, std::list<ast::operand>> operand_list_type;
     typedef x3::rule <var_decl_statement_class, ast::variable_declaration> var_decl_statement_type;
     typedef x3::rule <array_decl_statement_class, ast::array_declaration> array_decl_statement_type;
@@ -43,11 +42,14 @@ namespace parser {
     typedef x3::rule <if_statement_class, ast::if_statement> if_statement_type;
     typedef x3::rule <while_statement_class, ast::while_statement> while_statement_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
+    typedef x3::rule <function_class, ast::function> function_type;
+
+
 
     program_type const program("program");
     statement_type const statement("statement");
     block_type const block("block");
-    //var_decl_type const var_decl("var_decl");
+    var_decl_type const var_decl("var_decl");
     operand_list_type const operand_list("operand_list");
     var_decl_statement_type const var_decl_statement("var_decl_statement");
     array_decl_statement_type const array_decl_statement("array_decl_statement");
@@ -55,6 +57,7 @@ namespace parser {
     if_statement_type const if_statement("if_statement");
     while_statement_type const while_statement("while_statement");
     assignment_type const assignment("assignment");
+    function_type const function("function");
 
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
@@ -72,14 +75,15 @@ namespace parser {
 
     auto const block_def =
             '{'
-            > *statement
-//            > *lit(';') > statement % *lit(';') > *lit(';') // skip ; version
+            > *lit(';') // skip empty ; statements
+            > -(statement % *lit(';'))
+            > *lit(';') // skip empty ; statements
             > '}'
     ;
 
     auto const operand_list_def = operand2 % ',';
 
-    auto var_decl =
+    auto var_decl_def =
             (nocase_wholeword("var") | nocase_wholeword("const"))
             > type
             > variable
@@ -101,20 +105,19 @@ namespace parser {
 
     auto const return_statement_def =
             nocase_wholeword("return")
-            > operand2;
+            > operand2
+            > ';';
     ;
 
     auto const if_statement_def =
             nocase_wholeword("if") > operand2
             > block
             > -(nocase_wholeword("else") > block)
-            > -lit(';')
     ;
 
     auto const while_statement_def =
             nocase_wholeword("while") > operand2
             > block
-            > -lit(';')
     ;
 
     auto const assignment_def =
@@ -124,18 +127,36 @@ namespace parser {
             > ';'
     ;
 
-    auto const program_def = *statement;
+    const auto global_decl =
+            var_decl_statement
+            | array_decl_statement
+            | function
+    ;
+
+    const auto function_def =
+            nocase_wholeword("func") > type > variable
+            > '(' > -(var_decl % ',') > ')' // TODO forbid const parameters?
+            > block
+    ;
+
+    auto const program_def =
+            *lit(';') // skip ;
+            > -(global_decl % *lit(';'))
+            > *lit(';') // skip ;
+    ;
 
     BOOST_SPIRIT_DEFINE(
             statement,
             block,
             operand_list,
+            var_decl,
             var_decl_statement,
             array_decl_statement,
             return_statement,
             if_statement,
             while_statement,
             assignment,
+            function,
             program
     );
 

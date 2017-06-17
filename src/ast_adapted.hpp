@@ -30,12 +30,16 @@ BOOST_FUSION_ADAPT_STRUCT(ast::array_access,
                           var, index
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::typed_var,
+                          type_, var
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
-                          type_, var, rhs
+                          typed_var_, rhs
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::array_declaration,
-                          type_, var, size, rhs
+                          typed_var_, size, rhs
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::assignment,
@@ -52,6 +56,10 @@ BOOST_FUSION_ADAPT_STRUCT(ast::if_statement,
 
 BOOST_FUSION_ADAPT_STRUCT(ast::while_statement,
                           condition, body
+)
+
+BOOST_FUSION_ADAPT_STRUCT(ast::function,
+                          type_, var, params, body
 )
 
 #endif

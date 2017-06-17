@@ -36,6 +36,12 @@ namespace ast
         std::string name;
     };
 
+    struct typed_var
+    {
+        type type_;
+        variable var;
+    };
+
     struct operand :
             x3::variant<
                     nil, int, variable,
@@ -110,14 +116,12 @@ namespace ast
     };
 
     struct variable_declaration {
-        type type_;
-        variable var;
+        typed_var typed_var_;
         boost::optional<operand> rhs;
     };
 
     struct array_declaration {
-        type type_;
-        variable var;
+        typed_var typed_var_;
         operand size;
         boost::optional<std::list<operand>> rhs;
     };
@@ -162,7 +166,7 @@ namespace ast
         block body;
     };
 
-    typedef std::list<variable_declaration> param_list;
+    typedef std::list<typed_var> param_list;
 
     struct function
     {
@@ -179,7 +183,7 @@ namespace ast
             // TODO more
     > global_decl;
 
-    typedef statement_list program;
+    typedef std::list<global_decl> program;
 
     // print functions for debugging
     inline std::ostream &operator<<(std::ostream &out, nil) {

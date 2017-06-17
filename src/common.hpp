@@ -79,6 +79,8 @@ namespace parser {
     const auto variable_def = identifier;
     auto const type_def = identifier;
 
+    //qi::real_parser<float, qi::strict_real_policies<float>> strict_float;
+
     BOOST_SPIRIT_DEFINE(identifier, variable, type);
 
     struct variable_class : x3::annotate_on_success {
