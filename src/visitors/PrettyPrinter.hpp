@@ -143,6 +143,12 @@ namespace ASTVisitors
             visitDerived(x.body);
         }
 
+        result_type operator()(ast::return_statement& x)
+        {
+            *this << "return ";
+            visitBase(x);
+        }
+
         result_type operator()(ast::function& x)
         {
             writeIndented("func ");
@@ -161,6 +167,16 @@ namespace ASTVisitors
             visitDerived(x.name);
             *this << "(";
             visitDerived(x.baseClassName);
+            *this << ")\n";
+            visitDerived(x.body);
+        }
+
+        result_type operator()(ast::instance& x)
+        {
+            writeIndented("instance ");
+            visitDerived(x.name);
+            *this << "(";
+            visitDerived(x.className);
             *this << ")\n";
             visitDerived(x.body);
         }

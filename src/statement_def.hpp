@@ -32,6 +32,7 @@ namespace parser {
     struct assignment_class;
     struct function_class;
     struct prototyp_class;
+    struct instance_class;
 
     typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <block_class, ast::block> block_type;
@@ -45,6 +46,7 @@ namespace parser {
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
     typedef x3::rule <function_class, ast::function> function_type;
     typedef x3::rule <prototyp_class, ast::prototype> prototyp_type;
+    typedef x3::rule <instance_class, ast::instance> instance_type;
 
 
 
@@ -61,6 +63,7 @@ namespace parser {
     assignment_type const assignment("assignment");
     function_type const function("function");
     prototyp_type const prototype("prototype");
+    instance_type const instance("instance");
 
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
@@ -133,6 +136,7 @@ namespace parser {
     const auto global_decl =
             function
             | prototype
+            | instance
             | var_decl_statement
             | array_decl_statement
     ;
@@ -145,6 +149,12 @@ namespace parser {
 
     const auto prototype_def =
             nocase_wholeword("prototype")
+            > variable > '(' > variable > ')'
+            > block
+    ;
+
+    const auto instance_def =
+            nocase_wholeword("instance")
             > variable > '(' > variable > ')'
             > block
     ;
@@ -168,6 +178,7 @@ namespace parser {
             assignment,
             function,
             prototype,
+            instance,
             program
     )
 

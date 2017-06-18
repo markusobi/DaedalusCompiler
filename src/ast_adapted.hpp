@@ -66,4 +66,8 @@ BOOST_FUSION_ADAPT_STRUCT(ast::prototype,
                           name, baseClassName, body
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::instance,
+                          name, className, body
+)
+
 #endif

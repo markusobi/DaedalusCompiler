@@ -216,6 +216,14 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(ast::instance& x)
+        {
+            visitDerived(x.name);
+            visitDerived(x.className);
+            visitDerived(x.body);
+            return ResultType();
+        }
+
         ResultType operator()(ast::statement_list& x)
         {
             for (auto& statement : x) {

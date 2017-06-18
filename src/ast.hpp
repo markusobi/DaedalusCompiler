@@ -184,11 +184,19 @@ namespace ast
         block body;
     };
 
+    struct instance
+    {
+        variable name;
+        variable className;
+        block body;
+    };
+
     typedef x3::variant<
             variable_declaration, // TODO visitor check forbid global write on non-const
             array_declaration, // TODO visitor check forbid global write on non-const
             function,
-            prototype
+            prototype,
+            instance
     > global_decl;
 
     typedef std::list<global_decl> program;
