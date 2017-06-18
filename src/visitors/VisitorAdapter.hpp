@@ -183,7 +183,8 @@ namespace ASTVisitors
 
         ResultType operator()(ast::return_statement& x)
         {
-            visitDerived(x.operand_);
+            if (x.operand_)
+                visitDerived(*x.operand_);
             return ResultType();
         }
 

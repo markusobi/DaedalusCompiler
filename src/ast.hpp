@@ -136,7 +136,7 @@ namespace ast
 
     struct return_statement
     {
-        operand operand_;
+        boost::optional<operand> operand_;
     };
 
     struct if_statement;

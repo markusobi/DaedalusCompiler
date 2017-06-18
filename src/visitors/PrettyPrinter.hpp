@@ -157,8 +157,12 @@ namespace ASTVisitors
 
         result_type operator()(ast::return_statement& x)
         {
-            *this << "return ";
-            visitBase(x);
+            *this << "return";
+            if (x.operand_)
+            {
+                *this << " ";
+                visitBase(x);
+            }
         }
 
         result_type operator()(ast::function& x)

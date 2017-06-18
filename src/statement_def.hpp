@@ -115,7 +115,7 @@ namespace parser {
 
     auto const return_statement_def =
             nocase_wholeword("return")
-            > operand2
+            > -operand2
             > ';'
     ;
 
