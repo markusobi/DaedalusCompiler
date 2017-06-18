@@ -168,7 +168,7 @@ namespace parser {
             primary_expr,
             func_call,
             array_access
-    );
+    )
 
     struct unary_expr_class : x3::annotate_on_success {
     };

@@ -301,16 +301,16 @@ namespace code_gen {
             return false;
         switch (x.operator_) {
             case ast::op_positive:
-                program.op(op_pos);
+                program.op(static_cast<int>(op_pos));
                 break;
             case ast::op_negative:
-                program.op(op_neg);
+                program.op(static_cast<int>(op_neg));
                 break;
             case ast::op_logical_not:
-                program.op(op_lognot);
+                program.op(static_cast<int>(op_lognot));
                 break;
             case ast::op_bitwise_not:
-                program.op(op_bitnot);
+                program.op(static_cast<int>(op_bitnot));
                 break;
             default:
                 BOOST_ASSERT(0);

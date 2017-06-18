@@ -84,13 +84,15 @@ namespace ASTVisitors
         ResultType operator()(ast::operation& x)
         {
             // operation i.e. * 2
-            return visitDerived(x.operand_);
+            visitDerived(x.operand_);
+            return ResultType();
         }
 
         ResultType operator()(ast::unary& x)
         {
             // unary operation
-            return visitDerived(x.operand_);
+            visitDerived(x.operand_);
+            return ResultType();
         }
 
         template <class Inner>
@@ -104,6 +106,7 @@ namespace ASTVisitors
         ResultType operator()(T& x)
         {
             static_assert(sizeof(T) == 0, "missing visitor method overload in base visitor for type T");
+            return ResultType();
         }
 
         ResultType operator()(ast::expression& x)
@@ -197,10 +200,18 @@ namespace ASTVisitors
 
         ResultType operator()(ast::function& x)
         {
-            visitDerived(x.type_);
-            visitDerived(x.var);
+            visitDerived(x.returnType);
+            visitDerived(x.name);
             for (auto& decl : x.params)
                 visitDerived(decl);
+            visitDerived(x.body);
+            return ResultType();
+        }
+
+        ResultType operator()(ast::prototype& x)
+        {
+            visitDerived(x.name);
+            visitDerived(x.baseClassName);
             visitDerived(x.body);
             return ResultType();
         }

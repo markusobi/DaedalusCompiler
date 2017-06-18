@@ -171,17 +171,24 @@ namespace ast
 
     struct function
     {
-        type type_;
-        variable var;
+        type returnType;
+        variable name;
         param_list params;
+        block body;
+    };
+
+    struct prototype
+    {
+        variable name;
+        variable baseClassName;
         block body;
     };
 
     typedef x3::variant<
             variable_declaration, // TODO visitor check forbid global write on non-const
             array_declaration, // TODO visitor check forbid global write on non-const
-            function
-            // TODO more
+            function,
+            prototype
     > global_decl;
 
     typedef std::list<global_decl> program;

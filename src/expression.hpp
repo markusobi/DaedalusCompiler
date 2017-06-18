@@ -17,7 +17,7 @@ namespace parser {
     typedef x3::rule<operand_class, ast::operand> operand_type;
     typedef x3::rule<array_access_class, ast::array_access> array_access_type;
 
-    BOOST_SPIRIT_DECLARE(operand_type);
+    BOOST_SPIRIT_DECLARE(operand_type)
 }
 
 const parser::operand_type& getOperandParser();

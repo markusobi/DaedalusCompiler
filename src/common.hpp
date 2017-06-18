@@ -106,7 +106,7 @@ namespace parser {
         x3::real_parser<float, x3::strict_real_policies<float>> strict_float;
     }
 
-    BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const, string_literal);
+    BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const, string_literal)
 
     struct variable_class : x3::annotate_on_success {
     };

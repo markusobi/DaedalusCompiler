@@ -146,11 +146,21 @@ namespace ASTVisitors
         result_type operator()(ast::function& x)
         {
             writeIndented("func ");
-            visitDerived(x.type_);
+            visitDerived(x.returnType);
             *this << ' ';
-            visitDerived(x.var);
+            visitDerived(x.name);
             *this << "(";
             join(x.params, ", ");
+            *this << ")\n";
+            visitDerived(x.body);
+        }
+
+        result_type operator()(ast::prototype& x)
+        {
+            writeIndented("prototype ");
+            visitDerived(x.name);
+            *this << "(";
+            visitDerived(x.baseClassName);
             *this << ")\n";
             visitDerived(x.body);
         }

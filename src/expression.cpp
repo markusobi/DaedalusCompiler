@@ -8,8 +8,8 @@
 #include "config.hpp"
 
 namespace parser {
-    BOOST_SPIRIT_INSTANTIATE(operand_type, iterator_type, context_type);
-    BOOST_SPIRIT_INSTANTIATE(array_access_type, iterator_type, context_type);
+    BOOST_SPIRIT_INSTANTIATE(operand_type, iterator_type, context_type)
+    BOOST_SPIRIT_INSTANTIATE(array_access_type, iterator_type, context_type)
 }
 
 const parser::operand_type& getOperandParser()

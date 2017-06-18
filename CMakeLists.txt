@@ -3,7 +3,8 @@ cmake_minimum_required (VERSION 3.6)
 project(daedalusx3)
 
 set(CMAKE_CXX_STANDARD 14)
-#add_compile_options(-Wall -O3 -DNDEBUG)
+add_compile_options(-Wall -pedantic -Werror=return-type)
+#add_compile_options(-O3 -DNDEBUG)
 
 set(BOOST_ROOT ~/packages/boost)
 

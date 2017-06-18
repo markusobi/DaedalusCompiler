@@ -9,6 +9,6 @@
 #include "config.hpp"
 
 namespace parser {
-    BOOST_SPIRIT_INSTANTIATE(program_type, iterator_type, context_type);
+    BOOST_SPIRIT_INSTANTIATE(program_type, iterator_type, context_type)
 }
 

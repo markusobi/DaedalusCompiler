@@ -59,7 +59,11 @@ BOOST_FUSION_ADAPT_STRUCT(ast::while_statement,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::function,
-                          type_, var, params, body
+                          returnType, name, params, body
+)
+
+BOOST_FUSION_ADAPT_STRUCT(ast::prototype,
+                          name, baseClassName, body
 )
 
 #endif

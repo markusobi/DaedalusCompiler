@@ -14,7 +14,7 @@ namespace parser {
     struct program_class;
     typedef boost::spirit::x3::rule<program_class, ast::program> program_type;
 
-    BOOST_SPIRIT_DECLARE(program_type);
+    BOOST_SPIRIT_DECLARE(program_type)
 }
 
 parser::program_type const &getProgramParser();

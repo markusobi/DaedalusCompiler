@@ -31,6 +31,7 @@ namespace parser {
     struct while_statement_class;
     struct assignment_class;
     struct function_class;
+    struct prototyp_class;
 
     typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <block_class, ast::block> block_type;
@@ -43,6 +44,7 @@ namespace parser {
     typedef x3::rule <while_statement_class, ast::while_statement> while_statement_type;
     typedef x3::rule <assignment_class, ast::assignment> assignment_type;
     typedef x3::rule <function_class, ast::function> function_type;
+    typedef x3::rule <prototyp_class, ast::prototype> prototyp_type;
 
 
 
@@ -58,6 +60,7 @@ namespace parser {
     while_statement_type const while_statement("while_statement");
     assignment_type const assignment("assignment");
     function_type const function("function");
+    prototyp_type const prototype("prototype");
 
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
@@ -106,7 +109,7 @@ namespace parser {
     auto const return_statement_def =
             nocase_wholeword("return")
             > operand2
-            > ';';
+            > ';'
     ;
 
     auto const if_statement_def =
@@ -128,14 +131,21 @@ namespace parser {
     ;
 
     const auto global_decl =
-            var_decl_statement
+            function
+            | prototype
+            | var_decl_statement
             | array_decl_statement
-            | function
     ;
 
     const auto function_def =
             nocase_wholeword("func") > type > variable
             > '(' > -(var_decl % ',') > ')' // TODO forbid const parameters?
+            > block
+    ;
+
+    const auto prototype_def =
+            nocase_wholeword("prototype")
+            > variable > '(' > variable > ')'
             > block
     ;
 
@@ -157,8 +167,9 @@ namespace parser {
             while_statement,
             assignment,
             function,
+            prototype,
             program
-    );
+    )
 
     struct program_class : error_handler_base, x3::annotate_on_success {
     };

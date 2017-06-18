@@ -42,7 +42,7 @@ int vmachine::execute(std::vector<int> const &code,
 
     while (pc != code.end()) {
         BOOST_ASSERT(pc < code.end() && pc >= code.begin());
-        int a, b;
+
         byte_code op_code = byte_code(*pc++);
         if (op_code & op_unary_flag)
         {
