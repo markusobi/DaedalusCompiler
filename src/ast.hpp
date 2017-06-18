@@ -31,6 +31,12 @@ namespace ast
         std::string name;
     };
 
+    struct memberAccess : x3::position_tagged
+    {
+        variable object;
+        variable member;
+    };
+
     struct type : x3::position_tagged {
         type(std::string const &name = "") : name(name) {}
         std::string name;
@@ -45,12 +51,13 @@ namespace ast
 
     struct operand :
             x3::variant<
-                    nil, int, variable, std::string, float,
+                    nil, int, variable, std::string, float, memberAccess,
                     x3::forward_ast<unary>,
                     x3::forward_ast<expression>,
                     x3::forward_ast<func_call>,
                     x3::forward_ast<array_access>
-            > {
+            >
+    {
         using base_type::base_type;
         using base_type::operator=;
     };
@@ -107,7 +114,7 @@ namespace ast
     };
 
     struct array_access : x3::position_tagged {
-        variable var;
+        operand var;
         operand index;
     };
 

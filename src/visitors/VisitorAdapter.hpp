@@ -75,6 +75,14 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(ast::memberAccess& x)
+        {
+            // member access on object
+            visitDerived(x.object);
+            visitDerived(x.object);
+            return ResultType();
+        }
+
         ResultType operator()(ast::operand& x)
         {
             // dispatch at runtime dependent on the type inside the variant

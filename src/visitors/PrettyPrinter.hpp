@@ -56,6 +56,13 @@ namespace ASTVisitors
             *this << x.name;
         }
 
+        result_type operator()(ast::memberAccess& x)
+        {
+            visitDerived(x.object);
+            *this << '.';
+            visitDerived(x.member);
+        }
+
         result_type operator()(ast::func_call& x)
         {
             visitDerived(x.var);

@@ -71,6 +71,7 @@ namespace parser {
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
     namespace { auto const &array_access2 = getArrayAccessParser(); }
+    namespace { auto const &member_access2 = getMemberAccessParser(); }
 
     auto const statement_def =
             if_statement
@@ -130,7 +131,7 @@ namespace parser {
     ;
 
     auto const assignment_def =
-            (array_access2 | variable)
+            (array_access2 | member_access2 | variable)
             >> '=' >> !lit('=') // exclude operator ==
             > operand2
             > ';'

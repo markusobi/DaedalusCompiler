@@ -91,6 +91,7 @@ namespace parser {
     primary_expr_type const primary_expr = "primary_expr";
     func_call_type const func_call = "func_call";
     array_access_type const array_access = "array_access";
+    member_access_type const member_access = "member_access";
 
     auto const logical_or_expr_def =
             logical_and_expr
@@ -142,18 +143,26 @@ namespace parser {
             | int_
             | func_call
             | array_access
+            | member_access
             | variable
             | ('(' > operand > ')');
 
     const auto func_call_def = variable
                                >> '('
                                > -(operand % ',')
-                               > ')';
+                               > ')'
+    ;
 
-    const auto array_access_def = variable
+    const auto array_access_def = (member_access | variable)
                                   >> '['
                                   > operand
-                                  > ']';
+                                  > ']'
+    ;
+
+    const auto member_access_def = variable
+                                   >> '.'
+                                   >variable
+    ;
 
     auto const operand_def = logical_or_expr;
 
@@ -167,7 +176,8 @@ namespace parser {
             unary_expr,
             primary_expr,
             func_call,
-            array_access
+            array_access,
+            member_access
     )
 
     struct unary_expr_class : x3::annotate_on_success {

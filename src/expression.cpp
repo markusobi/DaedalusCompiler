@@ -24,7 +24,11 @@ const parser::array_access_type& getArrayAccessParser()
     return parser::array_access;
 }
 
-
+const parser::member_access_type& getMemberAccessParser()
+{
+    parser::add_keywords();
+    return parser::member_access;
+}
 
 const std::map<ast::optoken, std::string>& getOpTokenLookup()
 {

@@ -34,6 +34,10 @@ BOOST_FUSION_ADAPT_STRUCT(ast::typed_var,
                           isConst, type_, var
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::memberAccess,
+                          object, member
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
                           typed_var_, rhs
 )
