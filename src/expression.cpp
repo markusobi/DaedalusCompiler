@@ -36,6 +36,12 @@ const std::map<ast::optoken, std::string>& getOpTokenLookup()
     return parser::op_names;
 }
 
+const x3::symbols<ast::optoken>& getCompoundAssignmentOperators()
+{
+    parser::add_keywords();
+    return parser::compound_assignment;
+}
+
 namespace parser
 {
 
@@ -50,6 +56,14 @@ namespace parser
             op_names[id] = name;
             parser.add(name, id);
         };*/
+
+        compound_assignment.add
+                ("+=", ast::op_assign_plus)
+                ("-=", ast::op_assign_minus)
+                ("*=", ast::op_assign_times)
+                ("/=", ast::op_assign_divide)
+                ("%=", ast::op_assign_modulo)
+                ("=", ast::op_assign);
 
         logical_or_op.add
                 ("||", ast::op_logical_or);
@@ -95,7 +109,7 @@ namespace parser
                 ("!", ast::op_logical_not)
                 ("~", ast::op_bitwise_not);
 
-        std::list<x3::symbols<ast::optoken>> tables = {logical_or_op, logical_and_op, bitwise_or_op, bitwise_xor_op, bitwise_and_op,
+        std::list<x3::symbols<ast::optoken>> tables = {compound_assignment, logical_or_op, logical_and_op, bitwise_or_op, bitwise_xor_op, bitwise_and_op,
                                                        equality_op, relational_op, bitshift_op, additive_op, multiplicative_op, unary_op};
 
         for (auto& table : tables)

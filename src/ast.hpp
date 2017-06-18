@@ -63,6 +63,14 @@ namespace ast
     };
 
     enum optoken {
+
+        op_assign,
+        op_assign_plus,
+        op_assign_minus,
+        op_assign_times,
+        op_assign_divide,
+        op_assign_modulo,
+
         op_plus,
         op_minus,
         op_times,
@@ -120,6 +128,7 @@ namespace ast
 
     struct assignment : x3::position_tagged {
         operand lhs;
+        optoken operator_;
         operand rhs;
     };
 

@@ -47,7 +47,7 @@ BOOST_FUSION_ADAPT_STRUCT(ast::array_declaration,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::assignment,
-                          lhs, rhs
+                          lhs, operator_, rhs
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::return_statement,

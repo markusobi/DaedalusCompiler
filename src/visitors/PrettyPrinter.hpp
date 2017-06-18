@@ -98,7 +98,7 @@ namespace ASTVisitors
         result_type operator()(ast::assignment& x)
         {
             visitDerived(x.lhs);
-            *this << " = ";
+            *this << ' ' << getOpTokenLookup().at(x.operator_) << ' ';
             visitDerived(x.rhs);
         }
 

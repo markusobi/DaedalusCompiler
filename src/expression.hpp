@@ -30,3 +30,5 @@ const parser::array_access_type& getArrayAccessParser();
 const parser::member_access_type& getMemberAccessParser();
 
 const std::map<ast::optoken, std::string>& getOpTokenLookup();
+
+const x3::symbols<ast::optoken>& getCompoundAssignmentOperators();

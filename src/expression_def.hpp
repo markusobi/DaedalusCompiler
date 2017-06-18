@@ -28,6 +28,8 @@ namespace parser {
     namespace {
         std::map<ast::optoken, std::string> op_names;
 
+        x3::symbols <ast::optoken> compound_assignment;
+
         x3::symbols <ast::optoken> logical_or_op;
         x3::symbols <ast::optoken> logical_and_op;
         x3::symbols <ast::optoken> bitwise_or_op;

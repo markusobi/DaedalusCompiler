@@ -135,7 +135,7 @@ namespace parser {
 
     auto const assignment_def =
             (array_access2 | member_access2 | variable)
-            >> '=' >> !lit('=') // exclude operator ==
+            >> getCompoundAssignmentOperators() >> !lit('=') // exclude operator ==
             > operand2
             > ';'
     ;
