@@ -23,6 +23,7 @@
 #include "statement.hpp"
 #include "error_handler.hpp"
 #include "config.hpp"
+#include "skipper.hpp"
 #include <iostream>
 #include <visitors/ExpressionCollapse.hpp>
 #include "common.hpp"
@@ -97,8 +98,9 @@ int main(int argc, char* argv[])
                     getProgramParser()
             ];
 
-    using parser::encoding::space;
-    bool success = phrase_parse(iter, sourceEnd, parser, space, ast);
+    const auto& skipper = parser::getSkipper();
+
+    bool success = phrase_parse(iter, sourceEnd, parser, skipper, ast);
     if (!success || iter != sourceEnd)
     {
         std::cerr << "Parsing failed. Compilation aborted" << std::endl;

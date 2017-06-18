@@ -8,15 +8,18 @@
 
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
+#include "real_policy.hpp"
+#include "config.hpp"
 
 namespace parser {
     using x3::raw;
     using x3::lexeme;
-    namespace encoding = x3::iso8859_1;
     using encoding::alnum;
     using encoding::digit;
     using encoding::char_;
     using x3::no_case;
+    using x3::eol;
+    using x3::eoi;
 
     namespace {
         x3::symbols<> keywords;
@@ -103,7 +106,7 @@ namespace parser {
     const auto string_literal_def = lexeme['"' >> *(char_ - '"') >> '"']; // TODO replace \n in string literals
 
     namespace {
-        x3::real_parser<float, x3::strict_real_policies<float>> strict_float;
+        x3::real_parser<float, daedalus_real_policies<float>> strict_float;
     }
 
     BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const, string_literal)

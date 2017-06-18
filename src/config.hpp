@@ -4,21 +4,24 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CALC9_CONFIG_HPP)
-#define BOOST_SPIRIT_X3_CALC9_CONFIG_HPP
+#pragma once
 
 #include <boost/spirit/home/x3.hpp>
 #include "error_handler.hpp"
-#include "common.hpp"
+#include "skipper.hpp"
 
 namespace parser {
+    namespace encoding = x3::iso8859_1;
+
     typedef std::string::const_iterator iterator_type;
-    typedef x3::phrase_parse_context<encoding::space_type>::type phrase_context_type;
+    typedef x3::phrase_parse_context<skipper_type>::type phrase_context_type;
     typedef error_handler <iterator_type> error_handler_type;
 
     typedef x3::with_context<
-            error_handler_tag, std::reference_wrapper<error_handler_type> const, phrase_context_type>::type
+            error_handler_tag,
+            std::reference_wrapper<error_handler_type> const,
+            phrase_context_type
+                >::type
             context_type;
 }
 
-#endif
