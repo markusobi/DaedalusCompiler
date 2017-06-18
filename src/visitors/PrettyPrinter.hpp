@@ -41,6 +41,16 @@ namespace ASTVisitors
             *this << x;
         }
 
+        result_type operator()(float& x)
+        {
+            *this << std::fixed << x;
+        }
+
+        result_type operator()(std::string& x)
+        {
+            *this << '"' << x << '"';
+        }
+
         result_type operator()(ast::variable& x)
         {
             *this << x.name;

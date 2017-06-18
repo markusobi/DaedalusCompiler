@@ -16,8 +16,8 @@
 #include <iostream>
 
 namespace parser {
+    using x3::int_;
     using x3::uint_;
-    using x3::char_;
     using x3::raw;
     using x3::lexeme;
     using encoding::lit;
@@ -137,7 +137,9 @@ namespace parser {
             | (unary_op > unary_expr);
 
     auto const primary_expr_def =
-            uint_
+            string_literal
+            | strict_float
+            | int_
             | func_call
             | array_access
             | variable

@@ -45,7 +45,7 @@ namespace ast
 
     struct operand :
             x3::variant<
-                    nil, int, variable,
+                    nil, int, variable, std::string, float,
                     x3::forward_ast<unary>,
                     x3::forward_ast<expression>,
                     x3::forward_ast<func_call>,

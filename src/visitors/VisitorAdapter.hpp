@@ -57,6 +57,18 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(float& x)
+        {
+            // float literal
+            return ResultType();
+        }
+
+        ResultType operator()(std::string& x)
+        {
+            // string literal
+            return ResultType();
+        }
+
         ResultType operator()(ast::variable& x)
         {
             // variable usage or declaration

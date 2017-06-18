@@ -17,6 +17,12 @@ namespace ASTVisitors
             return x;
         }
 
+        result_type operator()(ast::unary& x)
+        {
+            visitBase(x);
+            return ast::operand(x);
+        }
+
         result_type operator()(ast::expression& x)
         {
             if (x.rest.empty())

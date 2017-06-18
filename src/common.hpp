@@ -15,6 +15,7 @@ namespace parser {
     namespace encoding = x3::iso8859_1;
     using encoding::alnum;
     using encoding::digit;
+    using encoding::char_;
     using x3::no_case;
 
     namespace {
@@ -39,8 +40,8 @@ namespace parser {
 /*                    ("int")
                     ("float")
                     ("string")
-                    ("instance")*/
-                    ("void")
+                    ("instance")
+                    ("void")*/
                     ("func")
                     ("var")
                     ("const");
@@ -65,16 +66,19 @@ namespace parser {
     struct variable_class;
     struct type_class;
     struct var_const_class;
+    struct string_literal_class;
 
     typedef x3::rule <identifier_class, std::string> identifier_type;
     typedef x3::rule <variable_class, ast::variable> variable_type;
     typedef x3::rule <type_class, ast::type> type_type;
     typedef x3::rule <var_const_class, bool> var_const_type;
+    typedef x3::rule <string_literal_class, std::string> string_literal_type;
 
     identifier_type const identifier = "identifier";
     variable_type const variable = "variable";
     type_type const type = "type";
     var_const_type const var_const = "type";
+    string_literal_type const string_literal = "string_literal";
 
     const auto ident_char = alnum | '_';
     const auto word_end = !ident_char;
@@ -96,10 +100,13 @@ namespace parser {
     const auto variable_def = identifier;
     auto const type_def = identifier;
     const auto var_const_def = getVarConst();
+    const auto string_literal_def = lexeme['"' >> *(char_ - '"') >> '"']; // TODO replace \n in string literals
 
-    //qi::real_parser<float, qi::strict_real_policies<float>> strict_float;
+    namespace {
+        x3::real_parser<float, x3::strict_real_policies<float>> strict_float;
+    }
 
-    BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const);
+    BOOST_SPIRIT_DEFINE(identifier, variable, type, var_const, string_literal);
 
     struct variable_class : x3::annotate_on_success {
     };
