@@ -119,9 +119,12 @@ namespace parser {
             > ';'
     ;
 
+    typedef x3::rule <struct condition_block_class, ast::condition_block> condition_block_type;
+    const auto condition_block2 = nocase_wholeword("if") > operand2 > block;
+
+
     auto const if_statement_def =
-            nocase_wholeword("if") > operand2
-            > block
+            (condition_block2 % nocase_wholeword("else"))
             > -(nocase_wholeword("else") > block)
     ;
 

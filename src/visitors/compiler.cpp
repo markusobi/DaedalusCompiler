@@ -372,7 +372,7 @@ namespace code_gen {
     }
 
     result_type compiler::operator()(ast::if_statement& x) {
-        if (!visitDerived(x.condition))
+/*        if (!visitDerived(x.condition))
             return false;
         program.op(op_jump_if, 0);                      // we shall fill this (0) in later
         std::size_t skip = program.size() - 1;            // mark its position
@@ -388,8 +388,8 @@ namespace code_gen {
             if (!visitDerived(*x.else_))
                 return false;
             program[exit] = int(program.size() - exit);   // now we know where to jump to (after the else branch)
-        }
-
+        }*/
+        throw std::runtime_error("unimplemented");
         return true;
     }
 

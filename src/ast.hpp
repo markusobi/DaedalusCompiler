@@ -163,9 +163,14 @@ namespace ast
     struct statement_list : std::list<statement> {
     };
 
-    struct if_statement {
+    struct condition_block
+    {
         operand condition;
         block then;
+    };
+
+    struct if_statement {
+        std::list<condition_block> condition_blocks;
         boost::optional<block> else_;
     };
 

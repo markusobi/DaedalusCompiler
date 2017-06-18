@@ -247,10 +247,17 @@ namespace ASTVisitors
             return ResultType();
         }
 
-        ResultType operator()(ast::if_statement& x)
+        ResultType operator()(ast::condition_block& x)
         {
             visitDerived(x.condition);
             visitDerived(x.then);
+            return ResultType();
+        }
+
+        ResultType operator()(ast::if_statement& x)
+        {
+            for (auto& cb : x.condition_blocks)
+                visitDerived(cb);
             if (x.else_)
                 visitDerived(*x.else_);
             return ResultType();

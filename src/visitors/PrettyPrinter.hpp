@@ -129,15 +129,20 @@ namespace ASTVisitors
             writeIndented("}");
         }
 
-        result_type operator()(ast::if_statement& x)
+        result_type operator()(ast::condition_block& x)
         {
             *this << "if (";
             visitDerived(x.condition);
             *this << ")\n";
             visitDerived(x.then);
+        }
+
+        result_type operator()(ast::if_statement& x)
+        {
+            join(x.condition_blocks, " else ");
             if (x.else_)
             {
-                writeIndentedLine("else");
+                *this << " else\n";
                 visitDerived(*x.else_);
             }
         }
@@ -230,7 +235,7 @@ namespace ASTVisitors
         {
             writeIndented("");
             visitBase(x);
-            *this << ";\n";
+            *this << ";\n\n";
         }
 
         template <typename T>

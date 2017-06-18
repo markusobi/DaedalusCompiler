@@ -3,7 +3,7 @@
 #include <boost/spirit/home/x3.hpp>
 
 template <typename T>
-struct daedalus_real_policies : boost::spirit::x3::real_policies<T>
+struct daedalus_real_policies : boost::spirit::x3::strict_ureal_policies<T>
 {
     //  don't parse inf
     template <typename Iterator, typename Attribute>

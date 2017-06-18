@@ -54,8 +54,12 @@ BOOST_FUSION_ADAPT_STRUCT(ast::return_statement,
                           operand_
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::condition_block,
+                          condition, then
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::if_statement,
-                          condition, then, else_
+                          condition_blocks, else_
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::while_statement,
