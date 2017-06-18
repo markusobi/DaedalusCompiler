@@ -41,8 +41,8 @@ namespace parser {
                     ("float")
                     ("string")
                     ("instance")
-                    ("void")*/
-                    ("func")
+                    ("void")
+                    ("func")*/
                     ("var")
                     ("const");
             return keywords;

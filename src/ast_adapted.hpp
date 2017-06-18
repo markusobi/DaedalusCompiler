@@ -70,4 +70,8 @@ BOOST_FUSION_ADAPT_STRUCT(ast::instance,
                           name, className, body
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::extern_class,
+                          name, body
+)
+
 #endif

@@ -181,6 +181,14 @@ namespace ASTVisitors
             visitDerived(x.body);
         }
 
+        result_type operator()(ast::extern_class& x)
+        {
+            writeIndented("class ");
+            visitDerived(x.name);
+            *this << '\n';
+            visitDerived(x.body);
+        }
+
         result_type operator()(ast::typed_var& x)
         {
             *this << (x.isConst ? "const " : "var ");
