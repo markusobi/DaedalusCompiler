@@ -1,11 +1,4 @@
-/*=============================================================================
-    Copyright (c) 2001-2014 Joel de Guzman
-
-    Distributed under the Boost Software License, Version 1.0. (See accompanying
-    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-=============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CALC9_STATEMENT_DEF_HPP)
-#define BOOST_SPIRIT_X3_CALC9_STATEMENT_DEF_HPP
+#pragma once
 
 #include <boost/spirit/home/x3.hpp>
 #include "ast.hpp"
@@ -51,8 +44,6 @@ namespace parser {
     typedef x3::rule <extern_class_class, ast::extern_class> extern_class_type;
 
 
-
-    program_type const program("program");
     statement_type const statement("statement");
     block_type const block("block");
     var_decl_type const var_decl("var_decl");
@@ -172,12 +163,6 @@ namespace parser {
             > block
     ;
 
-    auto const program_def =
-            *lit(';') // skip ;
-            > -(global_decl % *lit(';'))
-            > *lit(';') // skip ;
-    ;
-
     BOOST_SPIRIT_DEFINE(
             statement,
             block,
@@ -192,18 +177,9 @@ namespace parser {
             function,
             prototype,
             instance,
-            extern_class,
-            program
+            extern_class
     )
 
-    struct program_class : error_handler_base, x3::annotate_on_success {
-    };
     struct assignment_class : x3::annotate_on_success {
     };
 }
-
-parser::program_type const &getProgramParser() {
-    return parser::program;
-}
-
-#endif

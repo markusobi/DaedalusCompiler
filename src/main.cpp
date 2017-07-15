@@ -18,9 +18,7 @@
 
 #include <boost/program_options.hpp>
 #include "ast.hpp"
-#include "vm/vm.hpp"
-#include "visitors/compiler.hpp"
-#include "statement.hpp"
+#include "program.hpp"
 #include "error_handler.hpp"
 #include "config.hpp"
 #include "skipper.hpp"
@@ -78,16 +76,11 @@ int main(int argc, char* argv[])
     iterator_type iter(sourceCode.begin());
     const iterator_type sourceEnd(sourceCode.end());
 
-    vmachine vm;
-    code_gen::program program;
     ast::program ast;
 
     using boost::spirit::x3::with;
     using parser::error_handler_type;
     error_handler_type error_handler(iter, sourceEnd, std::cerr); // Our error handler
-
-    // Our compiler
-    code_gen::compiler compile(program, error_handler);
 
     // Our parser
     auto const parser =
