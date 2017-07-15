@@ -18,6 +18,7 @@ namespace parser {
     struct var_decl_class;
     class operand_list_class;
     struct var_decl_statement_class;
+    struct multi_var_decl_class;
     struct array_decl_statement_class;
     struct return_statement_class;
     struct if_statement_class;
@@ -33,6 +34,7 @@ namespace parser {
     typedef x3::rule <var_decl_class, ast::typed_var> var_decl_type;
     typedef x3::rule <operand_list_class, std::list<ast::operand>> operand_list_type;
     typedef x3::rule <var_decl_statement_class, ast::variable_declaration> var_decl_statement_type;
+    typedef x3::rule <multi_var_decl_class, ast::multi_variable_declaration> multi_var_decl_type;
     typedef x3::rule <array_decl_statement_class, ast::array_declaration> array_decl_statement_type;
     typedef x3::rule <return_statement_class, ast::return_statement> return_statement_type;
     typedef x3::rule <if_statement_class, ast::if_statement> if_statement_type;
@@ -58,6 +60,7 @@ namespace parser {
     prototyp_type const prototype("prototype");
     instance_type const instance("instance");
     extern_class_type const extern_class("extern_class");
+    multi_var_decl_type const multi_var_decl("multi_var_decl");
 
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
@@ -95,6 +98,13 @@ namespace parser {
             >> !lit('[')
             > -('=' > operand2)
             > ';'
+    ;
+
+    auto const multi_var_decl_def =
+            nocase_wholeword(var_const)
+            >> type
+            >> ((variable >> !lit('[')) % ',')
+            >> ';'
     ;
 
     auto const array_decl_statement_def =
@@ -160,7 +170,9 @@ namespace parser {
 
     const auto extern_class_def =
             nocase_wholeword("class") > variable
-            > block
+            > '{'
+            > *(multi_var_decl | array_decl_statement)
+            > '}'
     ;
 
     BOOST_SPIRIT_DEFINE(
@@ -177,6 +189,7 @@ namespace parser {
             function,
             prototype,
             instance,
+            multi_var_decl,
             extern_class
     )
 

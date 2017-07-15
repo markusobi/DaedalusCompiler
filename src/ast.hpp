@@ -137,6 +137,12 @@ namespace ast
         boost::optional<operand> rhs;
     };
 
+    struct multi_variable_declaration {
+        bool isConst;
+        type type_;
+        std::list<variable> vars;
+    };
+
     struct array_declaration {
         typed_var typed_var_;
         operand size;
@@ -151,25 +157,26 @@ namespace ast
     struct if_statement;
     struct while_statement;
     struct statement_list;
+    using block = statement_list;
 
     struct statement :
             x3::variant<
                     variable_declaration,
+                    multi_variable_declaration,
                     array_declaration,
                     assignment,
                     return_statement,
                     operand,
                     boost::recursive_wrapper<if_statement>,
                     boost::recursive_wrapper<while_statement>,
-                    boost::recursive_wrapper<statement_list>
+                    boost::recursive_wrapper<block>
             > {
         using base_type::base_type;
         using base_type::operator=;
     };
 
-    typedef statement_list block;
-
-    struct statement_list : std::list<statement> {
+    struct statement_list : std::list<statement>
+    {
     };
 
     struct condition_block

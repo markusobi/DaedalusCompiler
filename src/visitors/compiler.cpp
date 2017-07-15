@@ -363,7 +363,7 @@ namespace code_gen {
         return false;
     }
 
-    result_type compiler::operator()(ast::statement_list& x) {
+    result_type compiler::operator()(ast::block& x) {
         for (auto& s : x) {
             if (!visitDerived(s))
                 return false;

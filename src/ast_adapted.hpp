@@ -42,6 +42,10 @@ BOOST_FUSION_ADAPT_STRUCT(ast::variable_declaration,
                           typed_var_, rhs
 )
 
+BOOST_FUSION_ADAPT_STRUCT(ast::multi_variable_declaration,
+                          isConst, type_, vars
+)
+
 BOOST_FUSION_ADAPT_STRUCT(ast::array_declaration,
                           typed_var_, size, rhs
 )

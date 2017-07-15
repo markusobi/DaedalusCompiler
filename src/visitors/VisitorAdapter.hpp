@@ -240,7 +240,24 @@ namespace ASTVisitors
             return ResultType();
         }
 
-        ResultType operator()(ast::statement_list& x)
+        ResultType operator()(std::list<ast::multi_variable_declaration>& x)
+        {
+            for (auto& multi_decl : x) {
+                visitDerived(multi_decl);
+            }
+            return ResultType();
+        }
+
+        ResultType operator()(ast::multi_variable_declaration& x)
+        {
+            visitDerived(x.type_);
+            for (auto& decl : x.vars) {
+                visitDerived(decl);
+            }
+            return ResultType();
+        }
+
+        ResultType operator()(ast::block& x)
         {
             for (auto& statement : x) {
                 visitDerived(statement);

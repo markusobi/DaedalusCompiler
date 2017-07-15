@@ -205,6 +205,14 @@ namespace ASTVisitors
             visitDerived(x.body);
         }
 
+        result_type operator()(ast::multi_variable_declaration& x)
+        {
+            *this << (x.isConst ? "const " : "var ");
+            visitDerived(x.type_);
+            *this << ' ';
+            join(x.vars, ", ");
+        }
+
         result_type operator()(ast::typed_var& x)
         {
             *this << (x.isConst ? "const " : "var ");

@@ -61,7 +61,7 @@ namespace code_gen
         result_type operator()(ast::expression& x);
         result_type operator()(ast::assignment& x);
         result_type operator()(ast::variable_declaration& x);
-        result_type operator()(ast::statement_list& x);
+        result_type operator()(ast::block& x);
         result_type operator()(ast::if_statement& x);
         result_type operator()(ast::while_statement& x);
 
