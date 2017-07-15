@@ -51,7 +51,7 @@ namespace ASTVisitors
             return ResultType();
         }
 
-        ResultType operator()(int& x)
+        ResultType operator()(unsigned int& x)
         {
             // int literal
             return ResultType();

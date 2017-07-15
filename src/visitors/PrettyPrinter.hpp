@@ -36,7 +36,7 @@ namespace ASTVisitors
             *this << "<nil>";
         }
 
-        result_type operator()(int& x)
+        result_type operator()(unsigned int& x)
         {
             *this << x;
         }

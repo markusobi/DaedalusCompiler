@@ -71,6 +71,10 @@ int main(int argc, char* argv[])
         sourceCode = std::string(stdinIter, inputEnd);
     }
 
+    // TODO line numbers are wrong due to multiline comments
+    // fixes alignment of compile-error indicator when tabs are used
+    std::replace(sourceCode.begin(), sourceCode.end(), '\t', ' ');
+
     using parser::iterator_type;
     const iterator_type sourceBegin = sourceCode.begin();
     iterator_type iter(sourceCode.begin());
@@ -96,8 +100,11 @@ int main(int argc, char* argv[])
     bool success = phrase_parse(iter, sourceEnd, parser, skipper, ast);
     if (!success || iter != sourceEnd)
     {
-        std::cerr << "Parsing failed. Compilation aborted" << std::endl;
-        std::cout << "parsed so far:\n" << std::string(sourceBegin, iter + 1) << std::endl;
+        std::cerr << "Parsing failed. Compilation aborted." << std::endl;
+        if (!daedalus_filename.empty())
+            std::cerr << "file: " << daedalus_filename << std::endl;
+        if (iter != sourceBegin)
+            std::cerr << "parsed so far:\n" << std::string(sourceBegin, iter + 1) << std::endl;
         return 1;
     }
 

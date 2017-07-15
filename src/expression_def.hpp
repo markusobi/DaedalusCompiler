@@ -117,7 +117,7 @@ namespace parser {
     auto const primary_expr_def =
             string_literal
             | strict_float
-            | int_
+            | uint_
             | func_call
             | array_access
             | member_access
