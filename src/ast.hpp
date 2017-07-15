@@ -214,8 +214,8 @@ namespace ast
 
     struct instance
     {
+        type type_;
         variable name;
-        variable className;
         block body;
     };
 

@@ -174,10 +174,8 @@ namespace parser {
     ;
 
     const auto instance_def =
-            (
-                nocase_wholeword("instance")
-                > variable > '(' > variable > ')'
-            )
+            nocase_wholeword("instance")
+            > variable > '(' > type > ')'
             > block
     ;
 

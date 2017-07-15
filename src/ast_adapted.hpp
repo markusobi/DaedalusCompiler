@@ -79,7 +79,7 @@ BOOST_FUSION_ADAPT_STRUCT(ast::prototype,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::instance,
-                          name, className, body
+                          name, type_, body
 )
 
 BOOST_FUSION_ADAPT_STRUCT(ast::instance_var_decl,

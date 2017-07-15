@@ -201,7 +201,7 @@ namespace ASTVisitors
             writeIndented("instance ");
             visitDerived(x.name);
             *this << "(";
-            visitDerived(x.className);
+            visitDerived(x.type_);
             *this << ")\n";
             visitDerived(x.body);
         }

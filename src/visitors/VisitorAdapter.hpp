@@ -227,8 +227,8 @@ namespace ASTVisitors
 
         ResultType operator()(ast::instance& x)
         {
+            visitDerived(x.type_);
             visitDerived(x.name);
-            visitDerived(x.className);
             visitDerived(x.body);
             return ResultType();
         }
