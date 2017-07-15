@@ -219,6 +219,12 @@ namespace ast
         block body;
     };
 
+    struct instance_var_decl
+    {
+        type type_;
+        std::list<variable> vars;
+    };
+
     struct extern_class
     {
         variable name;
@@ -228,6 +234,7 @@ namespace ast
     typedef x3::variant<
             variable_declaration, // TODO visitor check forbid global write on non-const
             array_declaration, // TODO visitor check forbid global write on non-const
+            instance_var_decl,
             function,
             prototype,
             instance,

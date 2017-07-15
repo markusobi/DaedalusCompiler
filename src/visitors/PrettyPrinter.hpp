@@ -187,6 +187,15 @@ namespace ASTVisitors
             visitDerived(x.body);
         }
 
+        result_type operator()(ast::instance_var_decl& x)
+        {
+            writeIndented("instance ");
+            join(x.vars, ", ");
+            *this << "(";
+            visitDerived(x.type_);
+            *this << ")";
+        }
+
         result_type operator()(ast::instance& x)
         {
             writeIndented("instance ");

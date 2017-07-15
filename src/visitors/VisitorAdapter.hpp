@@ -233,6 +233,15 @@ namespace ASTVisitors
             return ResultType();
         }
 
+        ResultType operator()(ast::instance_var_decl& x)
+        {
+            visitDerived(x.type_);
+            for (auto& decl : x.vars) {
+                visitDerived(decl);
+            }
+            return ResultType();
+        }
+
         ResultType operator()(ast::extern_class& x)
         {
             visitDerived(x.name);

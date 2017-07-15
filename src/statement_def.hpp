@@ -28,6 +28,7 @@ namespace parser {
     struct prototyp_class;
     struct instance_class;
     struct extern_class_class;
+    struct instance_var_decl_class;
 
     typedef x3::rule <statement_class, ast::statement> statement_type;
     typedef x3::rule <block_class, ast::block> block_type;
@@ -44,7 +45,7 @@ namespace parser {
     typedef x3::rule <prototyp_class, ast::prototype> prototyp_type;
     typedef x3::rule <instance_class, ast::instance> instance_type;
     typedef x3::rule <extern_class_class, ast::extern_class> extern_class_type;
-
+    typedef x3::rule <instance_var_decl_class, ast::instance_var_decl> instance_var_decl_type;
 
     statement_type const statement("statement");
     block_type const block("block");
@@ -61,6 +62,7 @@ namespace parser {
     instance_type const instance("instance");
     extern_class_type const extern_class("extern_class");
     multi_var_decl_type const multi_var_decl("multi_var_decl");
+    instance_var_decl_type const instance_var_decl("instance_var_decl");
 
     // Import the expression rule
     namespace { auto const &operand2 = getOperandParser(); }
@@ -141,9 +143,18 @@ namespace parser {
             > ';'
     ;
 
+    const auto instance_var_decl_def =
+            (
+                nocase_wholeword("instance")
+                > (variable % ',') > '(' > type > ')'
+            )
+            >> ';'
+    ;
+
     const auto global_decl =
             function
             | prototype
+            | instance_var_decl
             | instance
             | extern_class
             | var_decl_statement
@@ -163,8 +174,10 @@ namespace parser {
     ;
 
     const auto instance_def =
-            nocase_wholeword("instance")
-            > variable > '(' > variable > ')'
+            (
+                nocase_wholeword("instance")
+                > variable > '(' > variable > ')'
+            )
             > block
     ;
 
@@ -182,6 +195,7 @@ namespace parser {
             var_decl,
             var_decl_statement,
             array_decl_statement,
+            instance_var_decl,
             return_statement,
             if_statement,
             while_statement,
