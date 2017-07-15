@@ -1,7 +1,6 @@
 #include "expression_def.hpp"
 #include "statement_def.hpp"
 #include "program_def.hpp"
-#include "config.hpp"
 
 namespace parser {
     //BOOST_SPIRIT_INSTANTIATE(operand_type, iterator_type, context_type)

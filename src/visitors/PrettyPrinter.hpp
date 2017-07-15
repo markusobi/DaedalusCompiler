@@ -78,13 +78,13 @@ namespace ASTVisitors
 
         result_type operator()(ast::operation& x)
         {
-            *this << " " << getOpTokenLookup().at(x.operator_) << " ";
+            *this << " " << parser::getOpTokenLookup().at(x.operator_) << " ";
             return visitBase(x);
         }
 
         result_type operator()(ast::unary& x)
         {
-            *this << getOpTokenLookup().at(x.operator_);
+            *this << parser::getOpTokenLookup().at(x.operator_);
             return visitBase(x);
         }
 
@@ -98,7 +98,7 @@ namespace ASTVisitors
         result_type operator()(ast::assignment& x)
         {
             visitDerived(x.lhs);
-            *this << ' ' << getOpTokenLookup().at(x.operator_) << ' ';
+            *this << ' ' << parser::getOpTokenLookup().at(x.operator_) << ' ';
             visitDerived(x.rhs);
         }
 

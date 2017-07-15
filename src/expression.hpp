@@ -20,25 +20,6 @@ namespace parser {
     typedef x3::rule<array_access_class, ast::array_access> array_access_type;
     typedef x3::rule <member_access_class, ast::memberAccess> member_access_type;
 
-
-    namespace {
-        std::map<ast::optoken, std::string> op_names;
-
-        x3::symbols <ast::optoken> compound_assignment;
-
-        x3::symbols <ast::optoken> logical_or_op;
-        x3::symbols <ast::optoken> logical_and_op;
-        x3::symbols <ast::optoken> bitwise_or_op;
-        x3::symbols <ast::optoken> bitwise_xor_op;
-        x3::symbols <ast::optoken> bitwise_and_op;
-        x3::symbols <ast::optoken> equality_op;
-        x3::symbols <ast::optoken> relational_op;
-        x3::symbols <ast::optoken> bitshift_op;
-        x3::symbols <ast::optoken> additive_op;
-        x3::symbols <ast::optoken> multiplicative_op;
-        x3::symbols <ast::optoken> unary_op;
-    }
-
     void add_keywords();
     int init_all();
 
@@ -69,23 +50,17 @@ namespace parser {
     typedef x3::rule <unary_expr_class, ast::operand> unary_expr_type;
     typedef x3::rule <primary_expr_class, ast::operand> primary_expr_type;
     typedef x3::rule <func_call_class, ast::func_call> func_call_type;
-
-    namespace {
-        auto dummy = init_all();
-    }
-
-    operand_type const operand = "operand";
-
-    array_access_type const array_access = "array_access";
-    member_access_type const member_access = "member_access";
 }
 
-const parser::operand_type& getOperandParser();
+namespace parser
+{
+    const parser::operand_type& getOperandParser();
 
-const parser::array_access_type& getArrayAccessParser();
+    const parser::array_access_type& getArrayAccessParser();
 
-const parser::member_access_type& getMemberAccessParser();
+    const parser::member_access_type& getMemberAccessParser();
 
-const std::map<ast::optoken, std::string>& getOpTokenLookup();
+    const std::map<ast::optoken, std::string>& getOpTokenLookup();
 
-const x3::symbols<ast::optoken>& getCompoundAssignmentOperators();
+    const x3::symbols<ast::optoken>& getCompoundAssignmentOperators();
+}

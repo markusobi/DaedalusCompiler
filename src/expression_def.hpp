@@ -26,6 +26,23 @@ namespace parser {
     // Tokens
     ////////////////////////////////////////////////////////////////////////////
 
+    std::map<ast::optoken, std::string> op_names;
+
+    x3::symbols <ast::optoken> compound_assignment;
+
+    x3::symbols <ast::optoken> logical_or_op;
+    x3::symbols <ast::optoken> logical_and_op;
+    x3::symbols <ast::optoken> bitwise_or_op;
+    x3::symbols <ast::optoken> bitwise_xor_op;
+    x3::symbols <ast::optoken> bitwise_and_op;
+    x3::symbols <ast::optoken> equality_op;
+    x3::symbols <ast::optoken> relational_op;
+    x3::symbols <ast::optoken> bitshift_op;
+    x3::symbols <ast::optoken> additive_op;
+    x3::symbols <ast::optoken> multiplicative_op;
+    x3::symbols <ast::optoken> unary_op;
+
+
     ////////////////////////////////////////////////////////////////////////////
     // Main expression grammar
     ////////////////////////////////////////////////////////////////////////////
@@ -43,6 +60,15 @@ namespace parser {
     unary_expr_type const unary_expr = "unary_expr";
     primary_expr_type const primary_expr = "primary_expr";
     func_call_type const func_call = "func_call";
+
+    operand_type const operand = "operand";
+
+    array_access_type const array_access = "array_access";
+    member_access_type const member_access = "member_access";
+
+    namespace {
+        auto dummy = init_all();
+    }
 
     auto const logical_or_expr_def =
             logical_and_expr
@@ -136,4 +162,117 @@ namespace parser {
     struct primary_expr_class : x3::annotate_on_success {
     };
 
+}
+
+namespace parser
+{
+    const operand_type& getOperandParser()
+    {
+        add_keywords();
+        return operand;
+    }
+
+    const array_access_type& getArrayAccessParser()
+    {
+        return array_access;
+    }
+
+    const member_access_type& getMemberAccessParser()
+    {
+        return member_access;
+    }
+
+    const std::map<ast::optoken, std::string>& getOpTokenLookup()
+    {
+        add_keywords();
+        return op_names;
+    }
+
+    const x3::symbols<ast::optoken>& getCompoundAssignmentOperators()
+    {
+        add_keywords();
+        return compound_assignment;
+    }
+
+
+    int init_all()
+    {
+        add_keywords();
+        return 0;
+    }
+
+    void add_keywords() {
+        static bool once = false;
+        if (once)
+            return;
+        once = true;
+
+/*        std::map<ast::optoken, std::string> op_names_local;
+        auto registerOperator = [](x3::symbols<ast::optoken>& parser, const std::string name, ast::optoken id){
+            op_names[id] = name;
+            parser.add(name, id);
+        };*/
+
+        compound_assignment.add
+                ("+=", ast::op_assign_plus)
+                ("-=", ast::op_assign_minus)
+                ("*=", ast::op_assign_times)
+                ("/=", ast::op_assign_divide)
+                ("%=", ast::op_assign_modulo)
+                ("=", ast::op_assign);
+
+        logical_or_op.add
+                ("||", ast::op_logical_or);
+
+        logical_and_op.add
+                ("&&", ast::op_logical_and);
+
+        bitwise_or_op.add
+                ("|", ast::op_bitwise_or);
+
+        bitwise_xor_op.add
+                ("^", ast::op_bitwise_xor);
+
+        bitwise_and_op.add
+                ("&", ast::op_bitwise_and);
+
+        equality_op.add
+                ("==", ast::op_equal)
+                ("!=", ast::op_not_equal);
+
+        relational_op.add
+                ("<", ast::op_less)
+                ("<=", ast::op_less_equal)
+                (">", ast::op_greater)
+                (">=", ast::op_greater_equal);
+
+        bitshift_op.add
+                ("<<", ast::op_shift_left)
+                (">>", ast::op_shift_right);
+
+        additive_op.add
+                ("+", ast::op_plus)
+                ("-", ast::op_minus);
+
+        multiplicative_op.add
+                ("*", ast::op_times)
+                ("/", ast::op_divide)
+                ("%", ast::op_modulo);
+
+        unary_op.add
+                ("+", ast::op_positive)
+                ("-", ast::op_negative)
+                ("!", ast::op_logical_not)
+                ("~", ast::op_bitwise_not);
+
+        std::list<x3::symbols<ast::optoken>> tables = {compound_assignment, logical_or_op, logical_and_op, bitwise_or_op, bitwise_xor_op, bitwise_and_op,
+                                                       equality_op, relational_op, bitshift_op, additive_op, multiplicative_op, unary_op};
+
+        for (auto& table : tables)
+        {
+            table.add.sym.lookup.get()->for_each([](const std::string name, ast::optoken id){
+                op_names[id] = name;
+            });
+        }
+    }
 }
