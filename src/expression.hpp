@@ -70,6 +70,10 @@ namespace parser {
     typedef x3::rule <primary_expr_class, ast::operand> primary_expr_type;
     typedef x3::rule <func_call_class, ast::func_call> func_call_type;
 
+    namespace {
+        auto dummy = init_all();
+    }
+
     operand_type const operand = "operand";
 
     array_access_type const array_access = "array_access";

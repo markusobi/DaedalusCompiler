@@ -14,13 +14,11 @@ const parser::operand_type& getOperandParser()
 
 const parser::array_access_type& getArrayAccessParser()
 {
-    parser::add_keywords();
     return parser::array_access;
 }
 
 const parser::member_access_type& getMemberAccessParser()
 {
-    parser::add_keywords();
     return parser::member_access;
 }
 

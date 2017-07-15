@@ -44,8 +44,6 @@ namespace parser {
     primary_expr_type const primary_expr = "primary_expr";
     func_call_type const func_call = "func_call";
 
-    auto dummy = init_all();
-
     auto const logical_or_expr_def =
             logical_and_expr
                     >> *(logical_or_op > logical_and_expr);
