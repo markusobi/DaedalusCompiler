@@ -4,7 +4,6 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#include "expression_def.hpp"
 #include "config.hpp"
 
 const parser::operand_type& getOperandParser()
@@ -39,6 +38,11 @@ const x3::symbols<ast::optoken>& getCompoundAssignmentOperators()
 
 namespace parser
 {
+    int init_all()
+    {
+        add_keywords();
+        return 0;
+    }
 
     void add_keywords() {
         static bool once = false;
